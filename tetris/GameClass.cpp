@@ -288,7 +288,7 @@ void GameClass::updateGame()
 	}							//end of gettting random tetriminos
 	if (timeForNextFall <= msTime) {		//when to fall
 		FallingTetrimno.fall(&grid);
-		timeForNextFall = msTime + 100;	//r3emembew to change this valve
+		timeForNextFall = msTime + 200;	//r3emembew to change this valve
 		if (FallingTetrimno.haslanded() == true) {	//remove filled lines, and increment score and level
 													//TO DO add score variable
 			int numberOfFilledLines = grid.detectFilledLine();
