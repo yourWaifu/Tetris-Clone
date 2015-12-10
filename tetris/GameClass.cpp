@@ -168,7 +168,7 @@ void GameClass::startGame()
 	mt.seed(seed_v);
 	//we have to state that the game is now running and that it's the first level, clear everything else
 	level = 0;
-	bag[0] = 6; bag[1] = 4; bag[0] = 6; bag[0] = 4;
+	bag[0] = 6; bag[1] = 4; bag[2] = 6; bag[3] = 4; 
 	grid.clear();
 	*gameState = in_game;
 	randomTetriminosIndex = 'n/a';

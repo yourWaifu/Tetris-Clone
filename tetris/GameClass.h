@@ -9,6 +9,8 @@
 #include "TextComponent.h"
 #include "Tetrimino.h"
 
+const SDL_Color white = { 255, 255, 255 };
+
 enum state {
 	starting,
 	quit,
@@ -51,7 +53,7 @@ private:
 	Tetrimino FallingTetrimno;
 	GridClass grid;								//the grid, what else do you think it is?
 	unsigned int seed;
-	int bag[4] = {6,4,6,4};
+	int bag[4];
 	//random
 	std::mt19937 mt;
 	uint32_t seed_v;
@@ -63,6 +65,5 @@ private:
 	SDL_Keycode rotateClockwise = SDLK_k;
 	SDL_Keycode rotateCounterClockwise = SDLK_j;
 	//UI
-	const SDL_Color white = { 255, 255, 255 };
 	TextComponent InGameUI;
 };

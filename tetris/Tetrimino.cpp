@@ -8,6 +8,7 @@ Tetrimino::Tetrimino(int h, int w, int StartLocationYAxisOffset, int(&shape)[4][
 	y += StartLocationYAxisOffset;	//this is so that the tetrimino starts at the top
 	shapeSize = h < w ? w : h;
 	rotation = 0;
+	velocity[0] = 0; velocity[1] = 0;
 	defineShape(shape);
 }
 

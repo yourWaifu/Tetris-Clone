@@ -45,7 +45,7 @@ private:
 	int gridx;
 	int gridy;
 	int rotation;
-	int velocity[2] = {0, 0};
+	int velocity[2];
 	int _shape[4][4][4];
 	//int blockSize;
 	int _fallSpeed;		//changes when to fall
