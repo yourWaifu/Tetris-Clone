@@ -1,26 +1,26 @@
-#include "Tetrimino.h"
+#include "Tetromino.h"
 
 
-Tetrimino::Tetrimino(int h, int w, int StartLocationYAxisOffset, int(&shape)[4][4][4])
+Tetromino::Tetromino(int h, int w, int StartLocationYAxisOffset, int(&shape)[4][4][4])
 {
 	_h = h;
 	_w = w;
-	y += StartLocationYAxisOffset;	//this is so that the tetrimino starts at the top
+	y += StartLocationYAxisOffset;	//this is so that the tetromino starts at the top
 	shapeSize = h < w ? w : h;
 	rotation = 0;
 	velocity[0] = 0; velocity[1] = 0;
 	defineShape(shape);
 }
 
-Tetrimino::Tetrimino()
+Tetromino::Tetromino()
 {
 }
 
-Tetrimino::~Tetrimino()
+Tetromino::~Tetromino()
 {
 }
 
-void Tetrimino::defineShape(int (&shape)[4][4][4])
+void Tetromino::defineShape(int (&shape)[4][4][4])
 {
 	for (size_t r = 0; r < 4; r++) {
 		for (size_t h = 0; h < 4; h++)
@@ -30,12 +30,11 @@ void Tetrimino::defineShape(int (&shape)[4][4][4])
 	}
 }
 
-void Tetrimino::draw(SDL_Renderer* renderer)
+void Tetromino::draw(SDL_Renderer* renderer)
 {
 	//color variable
 	int c = 0;
-	// this will crash if block is null
-	for (int h = 0; c <= 0; h++) {
+	for (int h = 0; c <= 0 && h < shapeSize; h++) {
 		for (int w = 0; w < shapeSize && c <= 0; w++) {
 			c += _shape[rotation][h][w];
 		}
@@ -53,7 +52,7 @@ void Tetrimino::draw(SDL_Renderer* renderer)
 	}
 }
 
-void Tetrimino::fall(GridClass* grid)
+void Tetromino::fall(GridClass* grid)
 {
 	velocity[1] = 1;
 	if (!detectCollision(grid, falling))
@@ -63,13 +62,13 @@ void Tetrimino::fall(GridClass* grid)
 	velocity[1] = 0;
 }
 
-void Tetrimino::move(GridClass * grid)
+void Tetromino::move(GridClass * grid)
 {
 	if (!detectCollision(grid, moving))
 		x += velocity[0];
 }
 
-void Tetrimino::rotate(int direction)
+void Tetromino::rotate(int direction)
 {
 	//you should check collision before rotating
 	//this will break if direction isn't 1 or -1
@@ -84,17 +83,17 @@ void Tetrimino::rotate(int direction)
 	}
 }
 
-void Tetrimino::changeFallSpeed(int fallSpeed)
+void Tetromino::changeFallSpeed(int fallSpeed)
 {
 	_fallSpeed = fallSpeed;
 }
 
-bool Tetrimino::detectCollision(GridClass* grid, reason theReason)
+bool Tetromino::detectCollision(GridClass* grid, reason theReason)
 {
 	//TO-DO add rotation
 	for (int fh = shapeSize - 1; -1 < fh; fh--) {
 		for (int fw = 0; fw < shapeSize; fw++) {
-			if (_shape[rotation][fh][fw] != 0) {		//checks if there is a block in tetrimino at fh and fw
+			if (_shape[rotation][fh][fw] != 0) {		//checks if there is a block in tetromino at fh and fw
 				int blockx = x + fw;
 				int blocky = y + fh;
 				int newx = blockx + velocity[0];
@@ -113,7 +112,7 @@ bool Tetrimino::detectCollision(GridClass* grid, reason theReason)
 	return false;
 }
 
-void Tetrimino::land(GridClass* grid)
+void Tetromino::land(GridClass* grid)
 {
 	//TO-DO add rotation
 	for (int fh = 0; fh < shapeSize; fh++) {
@@ -126,12 +125,12 @@ void Tetrimino::land(GridClass* grid)
 	hasLanded = true;
 }
 
-void Tetrimino::changeVelocity(unsigned int index, int value)
+void Tetromino::changeVelocity(unsigned int index, int value)
 {
 	velocity[index] = value;
 }
 
-bool Tetrimino::haslanded()
+bool Tetromino::haslanded()
 {
 	return hasLanded;
 }

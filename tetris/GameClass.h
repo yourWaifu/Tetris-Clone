@@ -7,7 +7,7 @@
 #include <random>
 #include <chrono>
 #include "TextComponent.h"
-#include "Tetrimino.h"
+#include "Tetromino.h"
 
 const SDL_Color white = { 255, 255, 255 };
 
@@ -30,6 +30,7 @@ public:
 	void processInput();
 	void updateGame();
 	//gameplay functions
+	void hold();
 	//void lose();		//only used for debuging for now
 
 private:
@@ -48,9 +49,12 @@ private:
 	Uint32 timeForNextFall;						//tells us when the block is going to fall in ms
 	Uint32 timeForNextMove;
 	int level = 0;
-	int randomTetriminosIndex;
-	std::array<Tetrimino*, 7> allTetriminos;	//every tetriminos
-	Tetrimino FallingTetrimno;
+	int holdingTetrominoIndex;
+	bool canHoldTetromino;
+	int randomTetrominosIndex;
+	std::array<Tetromino*, 7> allTetrominos;	//every tetriminos
+	Tetromino FallingTetrimno;
+	Tetromino HoldingTetrimno;
 	GridClass grid;								//the grid, what else do you think it is?
 	unsigned int seed;
 	int bag[4];
@@ -64,6 +68,7 @@ private:
 	SDL_Keycode moveRight2 = SDLK_RIGHT;
 	SDL_Keycode rotateClockwise = SDLK_k;
 	SDL_Keycode rotateCounterClockwise = SDLK_j;
+	SDL_Keycode holdTetromino = SDLK_u;
 	//UI
 	TextComponent InGameUI;
 };

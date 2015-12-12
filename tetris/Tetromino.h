@@ -14,25 +14,25 @@ enum reason {
 	spawning
 };
 
-//here is a list of tetriminos I, J, L, O, S, T, Z
-class Tetrimino
+//here is a list of tetrominos I, J, L, O, S, T, Z
+class Tetromino
 {
 public:
-	Tetrimino(int h, int w, int yAxisStartOffset, int(&shape)[4][4][4]);
-	Tetrimino();
-	~Tetrimino();
+	Tetromino(int h, int w, int yAxisStartOffset, int(&shape)[4][4][4]);
+	Tetromino();
+	~Tetromino();
 
 	//places the arrary being pasted into _shape
 	void defineShape(int(&shape)[4][4][4]);
-	//this will draw the tetrimino
+	//this will draw the tetromino
 	void draw(SDL_Renderer* renderer);
 	void fall(GridClass* grid);
 	void move(GridClass* grid);
 	void rotate(int direction);
 	void changeFallSpeed(int fallSpeed);
-	//this detects if the tetrimino is inside one another
+	//this detects if the tetromino is inside one another
 	bool detectCollision(GridClass* grid, reason theReason);
-	//places the tetrimino onto the grid
+	//places the tetromino onto the grid
 	void land(GridClass* grid);
 	void changeVelocity(unsigned int index, int value);
 	bool haslanded();

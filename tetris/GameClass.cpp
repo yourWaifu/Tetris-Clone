@@ -18,7 +18,7 @@ GameClass::~GameClass()
 
 void GameClass::startGame()
 {
-	//first, we define all Tetriminos aka hardcode all Tetriminos
+	//first, we define all Tetrominos aka hardcode all Tetrominos
 	/*
 	different numbers mean different color
 	0 = n/a empty space
@@ -51,7 +51,7 @@ void GameClass::startGame()
 								{ 0, 1, 0, 0 },
 								{ 0, 1, 0, 0 }	}	};
 	//piece: I, color: cyan. It's a line
-	Tetrimino I(1, 4, -1, shapeI);
+	Tetromino I(1, 4, -1, shapeI);
 	
 	int shapeJ[4][4][4] = {	{	{ 0, 0, 0 },
 								{ 2, 2, 2 },
@@ -69,7 +69,7 @@ void GameClass::startGame()
 								{ 0, 2, 0 },
 								{ 0, 2, 0 }	}	};
 	//piece J, color blue. it's a reverse L
-	Tetrimino J(2, 3, -1, shapeJ);
+	Tetromino J(2, 3, -1, shapeJ);
 
 	int shapeL[4][4][4] = { {	{ 0, 0, 0 },
 								{ 3, 3, 3 },
@@ -87,7 +87,7 @@ void GameClass::startGame()
 								{ 0, 3, 0 },
 								{ 0, 3, 3 }	}	};
 	//piece L, color orange. it's a L
-	Tetrimino L(2, 3, -1, shapeL);
+	Tetromino L(2, 3, -1, shapeL);
 
 	int shapeO[4][4][4] = { {	{ 4, 4 },
 								{ 4, 4 }	},
@@ -98,7 +98,7 @@ void GameClass::startGame()
 							{	{ 4, 4 },
 								{ 4, 4 }	}	};
 	//piece O, color yellow. it's a square of blocks
-	Tetrimino O(2, 2, 0, shapeO);
+	Tetromino O(2, 2, 0, shapeO);
 
 	int shapeS[4][4][4] = { {	{ 0, 0, 0 },
 								{ 0, 5, 5 },
@@ -116,7 +116,7 @@ void GameClass::startGame()
 								{ 0, 5, 5 },
 								{ 0, 0, 5 }	}	};
 	//piece S, color lime. FUCK YOU squiggly line
-	Tetrimino S(2, 3, -1, shapeS);
+	Tetromino S(2, 3, -1, shapeS);
 
 	int shapeT[4][4][4] = { {	{ 0, 0, 0 },
 								{ 6, 6, 6 },
@@ -134,7 +134,7 @@ void GameClass::startGame()
 								{ 0, 6, 6 },
 								{ 0, 6, 0 } }	};
 	//piece T, color purple. It's like a short t
-	Tetrimino T(2, 3, -1, shapeT);
+	Tetromino T(2, 3, -1, shapeT);
 
 	int shapeZ[4][4][4] = { {	{ 0, 0, 0 },
 								{ 7, 7, 0 },
@@ -152,10 +152,10 @@ void GameClass::startGame()
 								{ 0, 7, 7 },
 								{ 0, 7, 0 } }, };
 	//piece Z, color red. you're just as bad as S. YOU TOO CAN GO FUCK YOUSELF reverse squiggly line
-	Tetrimino Z(2, 3, -1, shapeZ);
+	Tetromino Z(2, 3, -1, shapeZ);
 
 	//now we put them into an array of pointers
-	allTetriminos = { &I, &J, &L, &O, &S, &T, &Z };
+	allTetrominos = { &I, &J, &L, &O, &S, &T, &Z };
 
 	//define time variables.
 	previousFrameTime = 0;
@@ -171,7 +171,9 @@ void GameClass::startGame()
 	bag[0] = 6; bag[1] = 4; bag[2] = 6; bag[3] = 4; 
 	grid.clear();
 	*gameState = in_game;
-	randomTetriminosIndex = 'n/a';
+	holdingTetrominoIndex = 'n/a';
+	canHoldTetromino = true;
+	randomTetrominosIndex = 'n/a';
 	timeForNextFall = msTime + 1000;
 
 	//UI
@@ -202,7 +204,7 @@ void GameClass::gameLoop()
 	//remember to take a look at http://gameprogrammingpatterns.com/game-loop.html
 	while ((currentTime - currentFrameTime) < minFrametime) {
 		msTime = SDL_GetTicks();
-		processInput();
+		processInput();		//note that process input is also used for updating the game
 		updateGame();
 		currentTime = SDL_GetPerformanceCounter();
 	}
@@ -218,6 +220,7 @@ void GameClass::gameDraw()
 	grid.draw(renderer);
 	//draw tetrimino
 	FallingTetrimno.draw(renderer);
+	HoldingTetrimno.draw(renderer);
 	//render level text. you should put this into it's own function
 	std::string InGameUIText = "Level " + std::to_string(level);
 	const char *InGameUITextChar = InGameUIText.c_str();
@@ -239,6 +242,8 @@ void GameClass::processInput()
 					FallingTetrimno.changeVelocity(0, (states[SDL_GetScancodeFromKey(moveRight)] || states[SDL_GetScancodeFromKey(moveRight2)]) - (states[SDL_GetScancodeFromKey(moveLeft)] || states[SDL_GetScancodeFromKey(moveLeft2)]));
 					timeForNextMove = msTime;
 				}
+				if (states[SDL_GetScancodeFromKey(holdTetromino)])
+					hold();
 				if (event.key.keysym.sym == rotateClockwise)
 					FallingTetrimno.rotate(clockwise);
 				if (event.key.keysym.sym == rotateCounterClockwise)
@@ -254,34 +259,34 @@ void GameClass::processInput()
 void GameClass::updateGame()
 {	
 	// randomness in tgm is crazy, This is the outdated one, becuase I don't understand how the newer one works
-	if (randomTetriminosIndex == 'n/a' || FallingTetrimno.haslanded()) {
+	if (randomTetrominosIndex == 'n/a' || FallingTetrimno.haslanded()) {
 		level++;
 		std::uniform_int_distribution<int> int_dist6(0, 6);
 		for (int i = 0; i < 6; i++) {
-			randomTetriminosIndex = int_dist6(mt);		//gen random number from 0 to 6
+			randomTetrominosIndex = int_dist6(mt);		//gen random number from 0 to 6
 			bool isInBag = false;
 			for (int j = 0; j < 4; j++) {				//checks if it's in the bag
-				if (bag[j] == randomTetriminosIndex) {
+				if (bag[j] == randomTetrominosIndex) {
 					isInBag = true;
 					break;
 				}
 			}
-			if (level == 1 && (randomTetriminosIndex == 3 || (i == 5 && isInBag == true))) {	//makes sure there is a block for first turn and that it isn't a O block
+			if (level == 1 && (randomTetrominosIndex == 3 || (i == 5 && isInBag == true))) {	//makes sure there is a block for first turn and that it isn't a O block
 				i--;
 			}
 			else if (!isInBag) {		//if it's not in the bag, put it in the bag and take out the last one
 				for (int j = 3; j > -1; j--) {
-					if (j == 0) bag[0] = randomTetriminosIndex;
+					if (j == 0) bag[0] = randomTetrominosIndex;
 					else bag[j] = bag[j - 1];
 				}
 				break;
 			}
 		}
 		/*//debug help
-		std::string randomTetriminosIndexString = std::to_string(randomTetriminosIndex);
-		OutputDebugString(randomTetriminosIndexString.c_str());
+		std::string randomTetrominosIndexString = std::to_string(randomTetrominosIndex);
+		OutputDebugString(randomTetrominosIndexString.c_str());
 		//end*/
-		FallingTetrimno = *allTetriminos[randomTetriminosIndex];		//make a new random falling tetrimino
+		FallingTetrimno = *allTetrominos[randomTetrominosIndex];		//make a new random falling tetrimino
 		if (FallingTetrimno.detectCollision(&grid, spawning)) {
 			*gameState = lost;
 		}
@@ -295,12 +300,30 @@ void GameClass::updateGame()
 			if (0 < numberOfFilledLines) {
 				level += (int)(float)((double)numberOfFilledLines * 1.5);
 			}
+			canHoldTetromino = true;
 		}
 	}
 	if (timeForNextMove <= msTime) { 
 		FallingTetrimno.move(&grid);
 		timeForNextMove = msTime + 200;
 	}
+}
+
+void GameClass::hold()
+{
+	if (canHoldTetromino == false)
+		return;
+	if (randomTetrominosIndex == 'n/a')
+		return;
+	int t = randomTetrominosIndex;
+	randomTetrominosIndex = holdingTetrominoIndex;
+	holdingTetrominoIndex = t;
+	HoldingTetrimno = *allTetrominos[holdingTetrominoIndex];
+	HoldingTetrimno.x = 0;
+	HoldingTetrimno.y = 2;
+	if (randomTetrominosIndex != 'n/a')
+		FallingTetrimno = *allTetrominos[randomTetrominosIndex];
+	canHoldTetromino = false;
 }
 
 /* this was for debugging a bug where losing made the game literally unplayable
@@ -317,7 +340,7 @@ void GameClass::lose()
 	bag[0] = 6; bag[1] = 4; bag[0] = 6; bag[0] = 4;
 	grid.clear();
 	*gameState = in_game;
-	randomTetriminosIndex = 'n/a';
+	randomTetrominosIndex = 'n/a';
 	timeForNextFall = msTime + 1000;
 }
 */
