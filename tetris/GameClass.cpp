@@ -18,7 +18,7 @@ GameClass::~GameClass()
 
 void GameClass::startGame()
 {
-	//first, we define all Tetrominos aka hardcode all Tetrominos
+	//first, we define all Tetrominos aka hardcode all Tetrominos and it's wall kick data
 	/*
 	different numbers mean different color
 	0 = n/a empty space
@@ -29,7 +29,22 @@ void GameClass::startGame()
 	5 = lime
 	6 = purple
 	7 = red
+	wall kicks are when the player attempts to rotate a tetromino, but the position 
 	*/
+	//wall kick data
+	int normalClockwiseWallKickData[4][5][2] = { 
+		{ { 0, 0 },{ 1, 0 },{ 1,-1 },{ 0,2 },{ 1,2 } },
+		{ { 0, 0 },{ 1, 0 },{ 1,1 },{ 0,-2 },{ 1,-2 } },
+		{ { 0, 0 },{ -1, 0 },{ -1,-1 },{ 0,2 },{ -1,2 } },
+		{ { 0, 0 },{ -1, 0 },{ -1,1 },{ 0,-2 },{ -1,-2 } }
+	};
+	int normalCounterClockwiseData[4][5][2] = {
+		{ { 0, 0 },{ -1, 0 },{ -1,-1 },{ 0,2 },{ -1,2 } },
+		{ { 0, 0 },{ 1, 0 },{ 1,1 },{ 0,-2 },{ 1,-2 } },
+		{ { 0, 0 },{ 1, 0 },{ 1,-1 },{ 0,2 },{ 1,2 } },
+		{ { 0, 0 },{ -1, 0 },{ -1,1 },{ 0,-2 },{ -1,-2 } }
+	};
+	WallKickData NormalWallKickData(normalClockwiseWallKickData, normalCounterClockwiseData);
 
 	int shapeI[4][4][4] = {	{	{ 0, 0, 0, 0 }, 
 								{ 1, 1, 1, 1 },
@@ -50,8 +65,8 @@ void GameClass::startGame()
 								{ 0, 1, 0, 0 },
 								{ 0, 1, 0, 0 },
 								{ 0, 1, 0, 0 }	}	};
-	//piece: I, color: cyan. It's a line
-	Tetromino I(1, 4, -1, shapeI);
+	//piece: I, color: cyan. It's a line//gets it's own wallkickdata
+	Tetromino I(1, 4, shapeI, 1, NormalWallKickData);
 	
 	int shapeJ[4][4][4] = {	{	{ 0, 0, 0 },
 								{ 2, 2, 2 },
@@ -69,7 +84,7 @@ void GameClass::startGame()
 								{ 0, 2, 0 },
 								{ 0, 2, 0 }	}	};
 	//piece J, color blue. it's a reverse L
-	Tetromino J(2, 3, -1, shapeJ);
+	Tetromino J(2, 3, shapeJ, 2, NormalWallKickData);
 
 	int shapeL[4][4][4] = { {	{ 0, 0, 0 },
 								{ 3, 3, 3 },
@@ -87,18 +102,22 @@ void GameClass::startGame()
 								{ 0, 3, 0 },
 								{ 0, 3, 3 }	}	};
 	//piece L, color orange. it's a L
-	Tetromino L(2, 3, -1, shapeL);
+	Tetromino L(2, 3, shapeL, 3, NormalWallKickData);
 
-	int shapeO[4][4][4] = { {	{ 4, 4 },
-								{ 4, 4 }	},
-							{	{ 4, 4 },
-								{ 4, 4 }	},
-							{	{ 4, 4 },
-								{ 4, 4 }	},
-							{	{ 4, 4 },
-								{ 4, 4 }	}	};
+	int shapeO[4][4][4] = { {	{ 0, 0, 0 },
+								{ 0, 4, 4 },
+								{ 0, 4, 4 } },
+							{	{ 0, 0, 0 },
+								{ 0, 4, 4 },
+								{ 0, 4, 4 } },
+							{	{ 0, 0, 0 },
+								{ 0, 4, 4 },
+								{ 0, 4, 4 } },
+							{	{ 0, 0, 0 },
+								{ 0, 4, 4 },
+								{ 0, 4, 4 } }, };
 	//piece O, color yellow. it's a square of blocks
-	Tetromino O(2, 2, 0, shapeO);
+	Tetromino O(3, 3, shapeO, 4, NormalWallKickData);		//having the O shape as 3 by 3 instead of 2 by 2 fixs a few bugs
 
 	int shapeS[4][4][4] = { {	{ 0, 0, 0 },
 								{ 0, 5, 5 },
@@ -116,7 +135,7 @@ void GameClass::startGame()
 								{ 0, 5, 5 },
 								{ 0, 0, 5 }	}	};
 	//piece S, color lime. FUCK YOU squiggly line
-	Tetromino S(2, 3, -1, shapeS);
+	Tetromino S(2, 3, shapeS, 5, NormalWallKickData);
 
 	int shapeT[4][4][4] = { {	{ 0, 0, 0 },
 								{ 6, 6, 6 },
@@ -134,7 +153,7 @@ void GameClass::startGame()
 								{ 0, 6, 6 },
 								{ 0, 6, 0 } }	};
 	//piece T, color purple. It's like a short t
-	Tetromino T(2, 3, -1, shapeT);
+	Tetromino T(2, 3, shapeT, 6, NormalWallKickData);
 
 	int shapeZ[4][4][4] = { {	{ 0, 0, 0 },
 								{ 7, 7, 0 },
@@ -152,7 +171,7 @@ void GameClass::startGame()
 								{ 0, 7, 7 },
 								{ 0, 7, 0 } }, };
 	//piece Z, color red. you're just as bad as S. YOU TOO CAN GO FUCK YOUSELF reverse squiggly line
-	Tetromino Z(2, 3, -1, shapeZ);
+	Tetromino Z(2, 3, shapeZ, 7, NormalWallKickData);
 
 	//now we put them into an array of pointers
 	allTetrominos = { &I, &J, &L, &O, &S, &T, &Z };
@@ -238,19 +257,23 @@ void GameClass::processInput()
 				*gameState = quit;
 				break;
 			case SDL_KEYDOWN:
+				//TO_DO MAKE THIS CLEANER
 				if ((states[SDL_GetScancodeFromKey(moveRight)] || states[SDL_GetScancodeFromKey(moveRight2)]) || (states[SDL_GetScancodeFromKey(moveLeft)] || states[SDL_GetScancodeFromKey(moveLeft2)])) {
-					FallingTetrimno.changeVelocity(0, (states[SDL_GetScancodeFromKey(moveRight)] || states[SDL_GetScancodeFromKey(moveRight2)]) - (states[SDL_GetScancodeFromKey(moveLeft)] || states[SDL_GetScancodeFromKey(moveLeft2)]));
+					potentialVelocity = (states[SDL_GetScancodeFromKey(moveRight)] || states[SDL_GetScancodeFromKey(moveRight2)]) - (states[SDL_GetScancodeFromKey(moveLeft)] || states[SDL_GetScancodeFromKey(moveLeft2)]);
 					timeForNextMove = msTime;
 				}
 				if (states[SDL_GetScancodeFromKey(holdTetromino)])
 					hold();
 				if (event.key.keysym.sym == rotateClockwise)
-					FallingTetrimno.rotate(clockwise);
+					FallingTetrimno.rotate(&grid, clockwise);
 				if (event.key.keysym.sym == rotateCounterClockwise)
-					FallingTetrimno.rotate(counterClockwise);
+					FallingTetrimno.rotate(&grid, counterClockwise);
 				break;
 			case SDL_KEYUP:
-				FallingTetrimno.changeVelocity(0, (event.key.keysym.sym != moveRight || event.key.keysym.sym != moveRight2) - (event.key.keysym.sym != moveLeft || event.key.keysym.sym != moveLeft2));
+				if ((!states[SDL_GetScancodeFromKey(moveRight)] || !states[SDL_GetScancodeFromKey(moveRight2)]) || (!states[SDL_GetScancodeFromKey(moveLeft)] || !states[SDL_GetScancodeFromKey(moveLeft2)])) {
+					potentialVelocity = (states[SDL_GetScancodeFromKey(moveRight)] || states[SDL_GetScancodeFromKey(moveRight2)]) - (states[SDL_GetScancodeFromKey(moveLeft)] || states[SDL_GetScancodeFromKey(moveLeft2)]);
+					timeForNextMove = msTime;
+				}
 				break;
 		}
 	}
@@ -304,7 +327,7 @@ void GameClass::updateGame()
 		}
 	}
 	if (timeForNextMove <= msTime) { 
-		FallingTetrimno.move(&grid);
+		FallingTetrimno.move(&grid, potentialVelocity);
 		timeForNextMove = msTime + 200;
 	}
 }
@@ -320,7 +343,7 @@ void GameClass::hold()
 	holdingTetrominoIndex = t;
 	HoldingTetrimno = *allTetrominos[holdingTetrominoIndex];
 	HoldingTetrimno.x = 0;
-	HoldingTetrimno.y = 2;
+	HoldingTetrimno.y = 1;
 	if (randomTetrominosIndex != 'n/a')
 		FallingTetrimno = *allTetrominos[randomTetrominosIndex];
 	canHoldTetromino = false;

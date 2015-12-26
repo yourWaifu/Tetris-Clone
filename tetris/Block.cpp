@@ -46,13 +46,14 @@ void setDrawColor(SDL_Renderer* renderer,int c)
 
 void Block::draw(SDL_Renderer* renderer, int x, int y)
 {
-	BlockRect.x = x;
-	BlockRect.y = y - 40; //BlockRect.y = y * 20 * 4  this is to not show the top five blocks so that the blocks spawn at the top
+	BlockRect.x = x + BorderPxSize;
+	BlockRect.y = y - 40 + BorderPxSize; //BlockRect.y = y * 20 * 4  this is to not show the top five blocks so that the blocks spawn at the top
 	SDL_RenderFillRect(renderer, &BlockRect);
 }
 
 Block::Block()
 {
-	BlockRect.w = blockSize;
-	BlockRect.h = blockSize;
+	BlockRect.w = blockSize / blockBorder;
+	BlockRect.h = blockSize / blockBorder;
+	BorderPxSize = blockSize - BlockRect.w;
 }

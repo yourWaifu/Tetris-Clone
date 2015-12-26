@@ -1,15 +1,16 @@
 #include "Tetromino.h"
 
 
-Tetromino::Tetromino(int h, int w, int StartLocationYAxisOffset, int(&shape)[4][4][4])
+Tetromino::Tetromino(int h, int w, int(&_shape)[4][4][4], int _color, WallKickData &_WallKickData)
 {
 	_h = h;
 	_w = w;
-	y += StartLocationYAxisOffset;	//this is so that the tetromino starts at the top
 	shapeSize = h < w ? w : h;
 	rotation = 0;
 	velocity[0] = 0; velocity[1] = 0;
-	defineShape(shape);
+	shape = &_shape;
+	color = _color;
+	WallKick_Data = &_WallKickData;
 }
 
 Tetromino::Tetromino()
@@ -20,31 +21,30 @@ Tetromino::~Tetromino()
 {
 }
 
-void Tetromino::defineShape(int (&shape)[4][4][4])
-{
-	for (size_t r = 0; r < 4; r++) {
-		for (size_t h = 0; h < 4; h++)
-			for (size_t w = 0; w < 4; w++) {
-				_shape[r][h][w] = shape[r][h][w];
-			}
-	}
-}
+//void Tetromino::defineShape(int (&shape)[4][4][4])
+//{
+//	for (size_t r = 0; r < 4; r++) {
+//		for (size_t h = 0; h < 4; h++)
+//			for (size_t w = 0; w < 4; w++) {
+//				_shape[r][h][w] = shape[r][h][w];
+//			}
+//	}
+//}
 
 void Tetromino::draw(SDL_Renderer* renderer)
 {
-	//color variable
-	int c = 0;
+	/*int c = 0;		//color variable
 	for (int h = 0; c <= 0 && h < shapeSize; h++) {
 		for (int w = 0; w < shapeSize && c <= 0; w++) {
-			c += _shape[rotation][h][w];
+			c += (*shape)[rotation][h][w];
 		}
-	}
+	}*/
 	
-	setDrawColor(renderer, c);
+	setDrawColor(renderer, color);
 	
 	for (int fh = 0; fh < shapeSize; fh++) {
 		for (int fw = 0; fw < shapeSize; fw++) {
-			if (_shape[rotation][fh][fw] > 0) {
+			if ((*shape)[rotation][fh][fw] > 0) {
 				Block b;
 				b.draw(renderer, (x + fw) * 20, (y + fh) * 20);
 			}
@@ -62,14 +62,17 @@ void Tetromino::fall(GridClass* grid)
 	velocity[1] = 0;
 }
 
-void Tetromino::move(GridClass * grid)
+void Tetromino::move(GridClass * grid, int pvelocity)
 {
+	velocity[0] = pvelocity;
 	if (!detectCollision(grid, moving))
 		x += velocity[0];
+	velocity[0] = 0;
 }
 
-void Tetromino::rotate(int direction)
+void Tetromino::rotate(GridClass * grid, int direction)
 {
+	int oldRotation = rotation;
 	//you should check collision before rotating
 	//this will break if direction isn't 1 or -1
 	if (rotation + direction < 0) {
@@ -81,6 +84,29 @@ void Tetromino::rotate(int direction)
 	else {
 		rotation += direction;
 	}
+	if (detectCollision(grid, rotating)) {
+		if (!wallKick(grid, direction)) {
+			rotation = oldRotation;
+		}
+	}
+}
+
+bool Tetromino::wallKick(GridClass * grid, int direction)
+{
+	//TODO stop floor kick abuse
+	int(*Data)[WallKickData::states][WallKickData::tests][WallKickData::positions] = 0 < direction ? WallKick_Data->clockwiseData : WallKick_Data->counterClockwiseData;
+	for (int testNumber = 1; testNumber < WallKickData::tests; testNumber++) {
+		velocity[0] = (*Data)[rotation][testNumber][0];
+		velocity[1] = (*Data)[rotation][testNumber][1];
+		if (!detectCollision(grid, rotating)) {
+			x += velocity[0];
+			y += velocity[1];
+			resetVelocity();
+			return true;
+		}
+	}
+	resetVelocity();
+	return false;
 }
 
 void Tetromino::changeFallSpeed(int fallSpeed)
@@ -88,19 +114,24 @@ void Tetromino::changeFallSpeed(int fallSpeed)
 	_fallSpeed = fallSpeed;
 }
 
+void Tetromino::resetVelocity()
+{
+	velocity[0] = 0;
+	velocity[1] = 0;
+}
+
 bool Tetromino::detectCollision(GridClass* grid, reason theReason)
 {
-	//TO-DO add rotation
 	for (int fh = shapeSize - 1; -1 < fh; fh--) {
 		for (int fw = 0; fw < shapeSize; fw++) {
-			if (_shape[rotation][fh][fw] != 0) {		//checks if there is a block in tetromino at fh and fw
+			if ((*shape)[rotation][fh][fw] != 0) {		//checks if there is a block in tetromino at fh and fw
 				int blockx = x + fw;
 				int blocky = y + fh;
 				int newx = blockx + velocity[0];
 				int newy = blocky + velocity[1];
-				if (theReason == moving && (newx < 0 || newx > 9))
+				if ((theReason == moving || theReason == rotating) && (newx < 0 || newx > GridClass::w - 1))
 					return true;
-				if (theReason == falling && newy > 24)
+				if ((theReason == falling || theReason == rotating) && newy > GridClass::h - 1)
 					return true;
 				if (theReason == spawning && grid->returnBlockColor(blockx, blocky) != 0)
 					return true;
@@ -117,20 +148,30 @@ void Tetromino::land(GridClass* grid)
 	//TO-DO add rotation
 	for (int fh = 0; fh < shapeSize; fh++) {
 		for (int fw = 0; fw < shapeSize; fw++) {
-			if (_shape[fh][fw] != 0) {
-				grid->placeBlock(_shape[rotation][fh][fw], fw + x, fh + y);
+			if ((*shape)[rotation][fh][fw] != 0) {
+				grid->placeBlock((*shape)[rotation][fh][fw], fw + x, fh + y);
 			}
 		}
 	}
 	hasLanded = true;
 }
 
-void Tetromino::changeVelocity(unsigned int index, int value)
-{
-	velocity[index] = value;
-}
+//void Tetromino::changeVelocity(unsigned int index, int value)
+//{
+//	velocity[index] = value;
+//}
 
 bool Tetromino::haslanded()
 {
 	return hasLanded;
+}
+
+WallKickData::WallKickData(int(&_clockwiseData)[4][5][2], int(&_counterClockwiseData)[4][5][2])
+{
+	clockwiseData = &_clockwiseData;
+	counterClockwiseData = &_counterClockwiseData;
+}
+
+WallKickData::WallKickData()
+{
 }

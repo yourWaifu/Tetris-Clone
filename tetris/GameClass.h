@@ -48,10 +48,11 @@ private:
 	//gameplay variables
 	Uint32 timeForNextFall;						//tells us when the block is going to fall in ms
 	Uint32 timeForNextMove;
+	int potentialVelocity;
 	int level = 0;
 	int holdingTetrominoIndex;
 	bool canHoldTetromino;
-	int randomTetrominosIndex;
+	int randomTetrominosIndex;					//TO-DO turn this into an array so that you can have the newxt displayed in game
 	std::array<Tetromino*, 7> allTetrominos;	//every tetriminos
 	Tetromino FallingTetrimno;
 	Tetromino HoldingTetrimno;

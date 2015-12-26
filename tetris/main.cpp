@@ -62,7 +62,8 @@ void startPlaying(SDL_Rect *Size, SDL_Window *win, SDL_Renderer *ren, state* sta
 /*
 
 The carzy to-do list
-add rotation
+stop floor kick abuse
+turn randomTetrominosIndex into an array so that you can have the next Tetromino displayed in game
 add speed timings such as internal gravity and delays
 add score
 add combo multiper
@@ -70,5 +71,4 @@ add score level multiplier
 maybe add rising garbage
 
 add input component
-add text component
 */

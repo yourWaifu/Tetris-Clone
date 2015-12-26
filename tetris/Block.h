@@ -21,4 +21,6 @@ struct Block{
 private:
 	SDL_Rect BlockRect;
 	const int blockSize = 20;
+	const float blockBorder = 1.1f;
+	int BorderPxSize;	//size of the border in pixals
 };

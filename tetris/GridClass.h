@@ -12,13 +12,13 @@ public:
 	void clear();
 	int detectFilledLine();		//check if the rows are filled, and return number of filled lines
 	void removeLine(int line);	//remove row
+	const static int h = 25;
+	const static int w = 10;
 private:
 	/*Playfield is 10 cells wide and at least 22 cells tall,
 	where rows above 20 are hidden or obstructed by the field frame
 	TO DO, make this part of the constructor
 	*/
-	const static int h = 25;
-	const static int w = 10;
 	//TO DO later make a function for this
 	int landed[h][w];
 };
