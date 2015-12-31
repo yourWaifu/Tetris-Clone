@@ -41,19 +41,18 @@ public:
 	void fall(GridClass* grid);
 	void move(GridClass* grid, int velocity);
 	void rotate(GridClass* grid, int direction);
-	bool wallKick(GridClass * grid, int direction);
+	void hardDrop(GridClass * grid);	//pieces drop instantly but not lock
 	void changeFallSpeed(int fallSpeed);
-	//this detects if the tetromino is inside one another
-	bool detectCollision(GridClass* grid, reason theReason);
-	//places the tetromino onto the grid
-	void land(GridClass* grid);
+	bool detectCollision(GridClass* grid, reason theReason);	//this detects if the tetromino is inside one another
 	//void changeVelocity(unsigned int index, int value);
 	bool haslanded();
 	int shapeSize;
 	int y = 3;
 	int x = 3;
 private:
-	void resetVelocity();		//velocity is 0
+	bool wallKick(GridClass * grid, int direction);
+	//places the tetromino onto the grid
+	void land(GridClass* grid);
 	int _h;
 	int _w;
 	int gridx;
@@ -66,4 +65,5 @@ private:
 	int _fallSpeed;		//changes when to fall
 	bool hasLanded = false;
 	WallKickData *WallKick_Data;
+	bool canFloorKick;
 };

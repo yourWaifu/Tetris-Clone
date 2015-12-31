@@ -60,10 +60,7 @@ void startPlaying(SDL_Rect *Size, SDL_Window *win, SDL_Renderer *ren, state* sta
 
 
 /*
-
 The carzy to-do list
-stop floor kick abuse
-turn randomTetrominosIndex into an array so that you can have the next Tetromino displayed in game
 add speed timings such as internal gravity and delays
 add score
 add combo multiper

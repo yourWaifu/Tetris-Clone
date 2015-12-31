@@ -18,7 +18,7 @@ GameClass::~GameClass()
 
 void GameClass::startGame()
 {
-	//first, we define all Tetrominos aka hardcode all Tetrominos and it's wall kick data
+	//first, we define all Tetrominoes aka hardcode all Tetrominoes and it's wall kick data
 	/*
 	different numbers mean different color
 	0 = n/a empty space
@@ -32,19 +32,33 @@ void GameClass::startGame()
 	wall kicks are when the player attempts to rotate a tetromino, but the position 
 	*/
 	//wall kick data
-	int normalClockwiseWallKickData[4][5][2] = { 
-		{ { 0, 0 },{ 1, 0 },{ 1,-1 },{ 0,2 },{ 1,2 } },
+	int normalClockwiseWallKickData[WallKickData::states][WallKickData::tests][WallKickData::positions] = {
 		{ { 0, 0 },{ 1, 0 },{ 1,1 },{ 0,-2 },{ 1,-2 } },
-		{ { 0, 0 },{ -1, 0 },{ -1,-1 },{ 0,2 },{ -1,2 } },
-		{ { 0, 0 },{ -1, 0 },{ -1,1 },{ 0,-2 },{ -1,-2 } }
+		{ { 0, 0 },{ 1, 0 },{ 1,-1 },{ 0,2 },{ 1,2 } },
+		{ { 0, 0 },{ -1, 0 },{ -1,1 },{ 0,-2 },{ -1,-2 } },
+		{ { 0, 0 },{ -1, 0 },{ -1,-1 },{ 0,2 },{ -1,2 } }
 	};
-	int normalCounterClockwiseData[4][5][2] = {
-		{ { 0, 0 },{ -1, 0 },{ -1,-1 },{ 0,2 },{ -1,2 } },
-		{ { 0, 0 },{ 1, 0 },{ 1,1 },{ 0,-2 },{ 1,-2 } },
+	int normalCounterClockwiseData[WallKickData::states][WallKickData::tests][WallKickData::positions] = {
+		{ { 0, 0 },{ -1, 0 },{ -1,1 },{ 0,-2 },{ -1,-2 } },
 		{ { 0, 0 },{ 1, 0 },{ 1,-1 },{ 0,2 },{ 1,2 } },
-		{ { 0, 0 },{ -1, 0 },{ -1,1 },{ 0,-2 },{ -1,-2 } }
+		{ { 0, 0 },{ 1, 0 },{ 1,1 },{ 0,-2 },{ 1,-2 } },
+		{ { 0, 0 },{ -1, 0 },{ -1,-1 },{ 0,2 },{ -1,2 } }
 	};
 	WallKickData NormalWallKickData(normalClockwiseWallKickData, normalCounterClockwiseData);
+
+	int shapeIClockwiseWallKickData[WallKickData::states][WallKickData::tests][WallKickData::positions] = {
+		{ { 0, 0 },{ -2, 0 },{ 1, 0 },{ -2,-1 },{ 1,2 } },
+		{ { 0, 0 },{ -2, 0 },{ 1, 0 },{ 1,-2 },{ -2,1 } },
+		{ { 0, 0 },{ -1, 0 },{ 2, 0 },{ -1,-2 },{ 2,1 } },
+		{ { 0, 0 },{ 2, 0 },{ -1, 0 },{ 2,-1 },{ -1,1 } }
+	};
+	int shapeICounterClockwiseWallKickData[WallKickData::states][WallKickData::tests][WallKickData::positions] = {
+		{ { 0, 0 },{ 2, 0 },{ -1, 0 },{ 2,-1 },{ -1,2 } },
+		{ { 0, 0 },{ -2, 0 },{ 1, 0 },{ -2,-1 },{ 1,1 } },
+		{ { 0, 0 },{ 1, 0 },{ -2, 0 },{ 1,-2 },{ -2,1 } },
+		{ { 0, 0 },{ 2, 0 },{ -1, 0 },{ -1,-2 },{ 2,1 } }
+	};
+	WallKickData shapeIWallKickData(shapeIClockwiseWallKickData, shapeICounterClockwiseWallKickData);
 
 	int shapeI[4][4][4] = {	{	{ 0, 0, 0, 0 }, 
 								{ 1, 1, 1, 1 },
@@ -66,7 +80,7 @@ void GameClass::startGame()
 								{ 0, 1, 0, 0 },
 								{ 0, 1, 0, 0 }	}	};
 	//piece: I, color: cyan. It's a line//gets it's own wallkickdata
-	Tetromino I(1, 4, shapeI, 1, NormalWallKickData);
+	Tetromino I(1, 4, shapeI, 1, shapeIWallKickData);
 	
 	int shapeJ[4][4][4] = {	{	{ 0, 0, 0 },
 								{ 2, 2, 2 },
@@ -174,7 +188,7 @@ void GameClass::startGame()
 	Tetromino Z(2, 3, shapeZ, 7, NormalWallKickData);
 
 	//now we put them into an array of pointers
-	allTetrominos = { &I, &J, &L, &O, &S, &T, &Z };
+	allTetrominoes = { &I, &J, &L, &O, &S, &T, &Z };
 
 	//define time variables.
 	previousFrameTime = 0;
@@ -186,13 +200,15 @@ void GameClass::startGame()
 	seed_v = rand() + (uint32_t)time(NULL);
 	mt.seed(seed_v);
 	//we have to state that the game is now running and that it's the first level, clear everything else
-	level = 0;
+	level = -3;
 	bag[0] = 6; bag[1] = 4; bag[2] = 6; bag[3] = 4; 
 	grid.clear();
 	*gameState = in_game;
 	holdingTetrominoIndex = 'n/a';
 	canHoldTetromino = true;
-	randomTetrominosIndex = 'n/a';
+	for (int i = 0; i < sizeOfRandomTetrominoesIndex; i++) {		//makes everything in the randomTetrominoesIndex array = n/a
+		randomTetrominoesIndex[i] = 'n/a';
+	}
 	timeForNextFall = msTime + 1000;
 
 	//UI
@@ -240,6 +256,13 @@ void GameClass::gameDraw()
 	//draw tetrimino
 	FallingTetrimno.draw(renderer);
 	HoldingTetrimno.draw(renderer);
+	//draw next Tetrimno
+	for (int i = 0; i < sizeOfRandomTetrominoesIndex - 1; i++) {
+		NextTetrimno = *allTetrominoes[randomTetrominoesIndex[i+1]];
+		NextTetrimno.x = 4 * i + 3;
+		NextTetrimno.y = 1;
+		NextTetrimno.draw(renderer);
+	}
 	//render level text. you should put this into it's own function
 	std::string InGameUIText = "Level " + std::to_string(level);
 	const char *InGameUITextChar = InGameUIText.c_str();
@@ -259,19 +282,18 @@ void GameClass::processInput()
 			case SDL_KEYDOWN:
 				//TO_DO MAKE THIS CLEANER
 				if ((states[SDL_GetScancodeFromKey(moveRight)] || states[SDL_GetScancodeFromKey(moveRight2)]) || (states[SDL_GetScancodeFromKey(moveLeft)] || states[SDL_GetScancodeFromKey(moveLeft2)])) {
-					potentialVelocity = (states[SDL_GetScancodeFromKey(moveRight)] || states[SDL_GetScancodeFromKey(moveRight2)]) - (states[SDL_GetScancodeFromKey(moveLeft)] || states[SDL_GetScancodeFromKey(moveLeft2)]);
+					potentialVelocity[0] = (states[SDL_GetScancodeFromKey(moveRight)] || states[SDL_GetScancodeFromKey(moveRight2)]) - (states[SDL_GetScancodeFromKey(moveLeft)] || states[SDL_GetScancodeFromKey(moveLeft2)]);
 					timeForNextMove = msTime;
 				}
 				if (states[SDL_GetScancodeFromKey(holdTetromino)])
 					hold();
-				if (event.key.keysym.sym == rotateClockwise)
-					FallingTetrimno.rotate(&grid, clockwise);
-				if (event.key.keysym.sym == rotateCounterClockwise)
-					FallingTetrimno.rotate(&grid, counterClockwise);
+				if (event.key.keysym.sym == hardDrop) FallingTetrimno.hardDrop(&grid);
+				if (event.key.keysym.sym == rotateClockwise) FallingTetrimno.rotate(&grid, clockwise);
+				if (event.key.keysym.sym == rotateCounterClockwise) FallingTetrimno.rotate(&grid, counterClockwise);
 				break;
 			case SDL_KEYUP:
 				if ((!states[SDL_GetScancodeFromKey(moveRight)] || !states[SDL_GetScancodeFromKey(moveRight2)]) || (!states[SDL_GetScancodeFromKey(moveLeft)] || !states[SDL_GetScancodeFromKey(moveLeft2)])) {
-					potentialVelocity = (states[SDL_GetScancodeFromKey(moveRight)] || states[SDL_GetScancodeFromKey(moveRight2)]) - (states[SDL_GetScancodeFromKey(moveLeft)] || states[SDL_GetScancodeFromKey(moveLeft2)]);
+					potentialVelocity[0] = (states[SDL_GetScancodeFromKey(moveRight)] || states[SDL_GetScancodeFromKey(moveRight2)]) - (states[SDL_GetScancodeFromKey(moveLeft)] || states[SDL_GetScancodeFromKey(moveLeft2)]);
 					timeForNextMove = msTime;
 				}
 				break;
@@ -280,40 +302,48 @@ void GameClass::processInput()
 }
 
 void GameClass::updateGame()
-{	
-	// randomness in tgm is crazy, This is the outdated one, becuase I don't understand how the newer one works
-	if (randomTetrominosIndex == 'n/a' || FallingTetrimno.haslanded()) {
-		level++;
-		std::uniform_int_distribution<int> int_dist6(0, 6);
-		for (int i = 0; i < 6; i++) {
-			randomTetrominosIndex = int_dist6(mt);		//gen random number from 0 to 6
-			bool isInBag = false;
-			for (int j = 0; j < 4; j++) {				//checks if it's in the bag
-				if (bag[j] == randomTetrominosIndex) {
-					isInBag = true;
+{
+	if (FallingTetrimno.haslanded() || (randomTetrominoesIndex[0] == 'n/a' && randomTetrominoesIndex[1] != 'n/a')) {
+		for (int i = 0; i < sizeOfRandomTetrominoesIndex; i++) {
+			randomTetrominoesIndex[i] = randomTetrominoesIndex[i + 1];
+		}
+		randomTetrominoesIndex[3] = 'n/a';
+		spawnNewFallingTetromino();
+	}
+	for (int l = 0; l < sizeOfRandomTetrominoesIndex; l++) {
+		// randomness in tgm is crazy, This is the outdated one, becuase I don't understand how the newer one works
+		if (randomTetrominoesIndex[l] == 'n/a') {
+			level++;
+			std::uniform_int_distribution<int> int_dist6(0, 6);
+			for (int i = 0; i < 6; i++) {
+				randomTetrominoesIndex[l] = int_dist6(mt);		//gen random number from 0 to 6
+				bool isInBag = false;
+				for (int j = 0; j < 4; j++) {				//checks if it's in the bag
+					if (bag[j] == randomTetrominoesIndex[l]) {
+						isInBag = true;
+						break;
+					}
+				}
+				if (level == -2 && (randomTetrominoesIndex[l] == 3 || (i == 5 && isInBag == true))) {	//makes sure there is a block for first turn and that it isn't a O block
+					i--;
+				}
+				else if (!isInBag) {		//if it's not in the bag, put it in the bag and take out the last one
+					for (int j = 3; j > -1; j--) {
+						if (j == 0) bag[0] = randomTetrominoesIndex[l];
+						else bag[j] = bag[j - 1];
+					}
 					break;
 				}
 			}
-			if (level == 1 && (randomTetrominosIndex == 3 || (i == 5 && isInBag == true))) {	//makes sure there is a block for first turn and that it isn't a O block
-				i--;
+			/*//debug help
+			std::string randomTetrominoesIndexString = std::to_string(randomTetrominoesIndex);
+			OutputDebugString(randomTetrominoesIndexString.c_str());
+			//end*/
+			if (l == 0) {
+				spawnNewFallingTetromino();
 			}
-			else if (!isInBag) {		//if it's not in the bag, put it in the bag and take out the last one
-				for (int j = 3; j > -1; j--) {
-					if (j == 0) bag[0] = randomTetrominosIndex;
-					else bag[j] = bag[j - 1];
-				}
-				break;
-			}
-		}
-		/*//debug help
-		std::string randomTetrominosIndexString = std::to_string(randomTetrominosIndex);
-		OutputDebugString(randomTetrominosIndexString.c_str());
-		//end*/
-		FallingTetrimno = *allTetrominos[randomTetrominosIndex];		//make a new random falling tetrimino
-		if (FallingTetrimno.detectCollision(&grid, spawning)) {
-			*gameState = lost;
-		}
-	}							//end of gettting random tetriminos
+		}							//end of gettting random tetriminos
+	}
 	if (timeForNextFall <= msTime) {		//when to fall
 		FallingTetrimno.fall(&grid);
 		timeForNextFall = msTime + 200;	//r3emembew to change this valve
@@ -327,7 +357,7 @@ void GameClass::updateGame()
 		}
 	}
 	if (timeForNextMove <= msTime) { 
-		FallingTetrimno.move(&grid, potentialVelocity);
+		FallingTetrimno.move(&grid, potentialVelocity[0]);
 		timeForNextMove = msTime + 200;
 	}
 }
@@ -336,17 +366,25 @@ void GameClass::hold()
 {
 	if (canHoldTetromino == false)
 		return;
-	if (randomTetrominosIndex == 'n/a')
+	if (randomTetrominoesIndex[0] == 'n/a')
 		return;
-	int t = randomTetrominosIndex;
-	randomTetrominosIndex = holdingTetrominoIndex;
+	int t = randomTetrominoesIndex[0];
+	randomTetrominoesIndex[0] = holdingTetrominoIndex;
 	holdingTetrominoIndex = t;
-	HoldingTetrimno = *allTetrominos[holdingTetrominoIndex];
+	HoldingTetrimno = *allTetrominoes[holdingTetrominoIndex];
 	HoldingTetrimno.x = 0;
 	HoldingTetrimno.y = 1;
-	if (randomTetrominosIndex != 'n/a')
-		FallingTetrimno = *allTetrominos[randomTetrominosIndex];
+	if (randomTetrominoesIndex[0] != 'n/a')
+		FallingTetrimno = *allTetrominoes[randomTetrominoesIndex[0]];
 	canHoldTetromino = false;
+}
+
+void GameClass::spawnNewFallingTetromino()
+{
+	FallingTetrimno = *allTetrominoes[randomTetrominoesIndex[0]];
+	if (FallingTetrimno.detectCollision(&grid, spawning)) {
+		*gameState = lost;
+	}
 }
 
 /* this was for debugging a bug where losing made the game literally unplayable
@@ -363,7 +401,7 @@ void GameClass::lose()
 	bag[0] = 6; bag[1] = 4; bag[0] = 6; bag[0] = 4;
 	grid.clear();
 	*gameState = in_game;
-	randomTetrominosIndex = 'n/a';
+	randomTetrominoesIndex = 'n/a';
 	timeForNextFall = msTime + 1000;
 }
 */

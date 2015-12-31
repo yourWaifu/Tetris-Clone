@@ -11,6 +11,7 @@ Tetromino::Tetromino(int h, int w, int(&_shape)[4][4][4], int _color, WallKickDa
 	shape = &_shape;
 	color = _color;
 	WallKick_Data = &_WallKickData;
+	canFloorKick = true;
 }
 
 Tetromino::Tetromino()
@@ -91,33 +92,41 @@ void Tetromino::rotate(GridClass * grid, int direction)
 	}
 }
 
+void Tetromino::hardDrop(GridClass * grid)
+{
+	for (int i = 1; i < grid->h; i++) {
+		velocity[1] = i;
+		if (detectCollision(grid, falling)) {
+			y += velocity[1] - 1;
+			break;
+		}
+	}
+}
+
 bool Tetromino::wallKick(GridClass * grid, int direction)
 {
-	//TODO stop floor kick abuse
+	bool wallkick = false;
 	int(*Data)[WallKickData::states][WallKickData::tests][WallKickData::positions] = 0 < direction ? WallKick_Data->clockwiseData : WallKick_Data->counterClockwiseData;
 	for (int testNumber = 1; testNumber < WallKickData::tests; testNumber++) {
 		velocity[0] = (*Data)[rotation][testNumber][0];
 		velocity[1] = (*Data)[rotation][testNumber][1];
-		if (!detectCollision(grid, rotating)) {
+		if (!detectCollision(grid, rotating) && !(!canFloorKick && velocity[1] < 0)) {
 			x += velocity[0];
 			y += velocity[1];
-			resetVelocity();
-			return true;
+			if (velocity[1] < 0)
+				canFloorKick = false;
+			wallkick = true;
+			break;
 		}
 	}
-	resetVelocity();
-	return false;
+	velocity[0] = 0;
+	velocity[1] = 0;
+	return wallkick;
 }
 
 void Tetromino::changeFallSpeed(int fallSpeed)
 {
 	_fallSpeed = fallSpeed;
-}
-
-void Tetromino::resetVelocity()
-{
-	velocity[0] = 0;
-	velocity[1] = 0;
 }
 
 bool Tetromino::detectCollision(GridClass* grid, reason theReason)
@@ -154,6 +163,7 @@ void Tetromino::land(GridClass* grid)
 		}
 	}
 	hasLanded = true;
+	canFloorKick = true;	//This doesn't need to be here, but I'm doing it just in case there is a bug with the floorkick
 }
 
 //void Tetromino::changeVelocity(unsigned int index, int value)

@@ -24,6 +24,7 @@ public:
 	GameClass(SDL_Rect *Size, SDL_Window *win, SDL_Renderer *ren, state* stateOfTheGame);
 	~GameClass();
 
+private:
 	void startGame();
 	void gameLoop();
 	void gameDraw();
@@ -31,9 +32,8 @@ public:
 	void updateGame();
 	//gameplay functions
 	void hold();
+	void spawnNewFallingTetromino();
 	//void lose();		//only used for debuging for now
-
-private:
 	Uint64 previousFrameTime;
 	Uint64 currentFrameTime;
 	Uint64 currentTime;
@@ -48,14 +48,16 @@ private:
 	//gameplay variables
 	Uint32 timeForNextFall;						//tells us when the block is going to fall in ms
 	Uint32 timeForNextMove;
-	int potentialVelocity;
+	int potentialVelocity[2];
 	int level = 0;
 	int holdingTetrominoIndex;
 	bool canHoldTetromino;
-	int randomTetrominosIndex;					//TO-DO turn this into an array so that you can have the newxt displayed in game
-	std::array<Tetromino*, 7> allTetrominos;	//every tetriminos
+	const static int sizeOfRandomTetrominoesIndex = 4;
+	int randomTetrominoesIndex[sizeOfRandomTetrominoesIndex];
+	std::array<Tetromino*, 7> allTetrominoes;	//every tetriminos
 	Tetromino FallingTetrimno;
 	Tetromino HoldingTetrimno;
+	Tetromino NextTetrimno;
 	GridClass grid;								//the grid, what else do you think it is?
 	unsigned int seed;
 	int bag[4];
@@ -70,6 +72,7 @@ private:
 	SDL_Keycode rotateClockwise = SDLK_k;
 	SDL_Keycode rotateCounterClockwise = SDLK_j;
 	SDL_Keycode holdTetromino = SDLK_u;
+	SDL_Keycode hardDrop = SDLK_w;
 	//UI
 	TextComponent InGameUI;
 };
