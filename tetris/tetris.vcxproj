@@ -70,7 +70,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(SolutionDir)deps\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\steve\Documents\Visual Studio 2015\Projects\tetris\deps\lib2013;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)deps\lib2013;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(SolutionDir)deps\include;$(IncludePath)</IncludePath>
