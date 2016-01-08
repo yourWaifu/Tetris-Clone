@@ -9,3 +9,5 @@ move piece is a or d
 hard drop is w
 
 rotation is j or k
+
+hold is u
