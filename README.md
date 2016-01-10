@@ -15,9 +15,11 @@ in the future I plan to make it so that you can change the controls
 * add score
   * add combo multiper
   * add score level multiplier
+  * save highscore
 * an opinions memu
   * input opinions
   * video opinions
     * screen resolution opinions
   * game opinions
     * ghost piece shade amount
+* add replay system
