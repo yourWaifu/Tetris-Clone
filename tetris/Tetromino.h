@@ -37,18 +37,22 @@ public:
 	//places the arrary being pasted into _shape
 	//void defineShape(int(&shape)[4][4][4]);
 	//this will draw the tetromino
-	void draw(SDL_Renderer* renderer);
+	virtual void draw(SDL_Renderer* renderer);
+	void drawShape(SDL_Renderer* renderer);
 	void fall(GridClass* grid);
 	void move(GridClass* grid, int velocity);
 	void rotate(GridClass* grid, int direction);
-	void hardDrop(GridClass * grid);	//pieces drop instantly but not lock
+	void hardDrop(GridClass * grid, Tetromino *Hint);	//pieces drop instantly but not lock
 	void changeFallSpeed(int fallSpeed);
 	bool detectCollision(GridClass* grid, reason theReason);	//this detects if the tetromino is inside one another
+	int returnRotation() { return rotation; }
+	int returnColor() { return color; }
+	int returnShapeSize() { return shapeSize; }
 	//void changeVelocity(unsigned int index, int value);
 	bool haslanded();
-	int shapeSize;
 	int y = 3;
 	int x = 3;
+	int(*shape)[4][4][4];		//please don't ever change this value while in-game
 private:
 	bool wallKick(GridClass * grid, int direction);
 	//places the tetromino onto the grid
@@ -57,13 +61,24 @@ private:
 	int _w;
 	int gridx;
 	int gridy;
-	int rotation;
-	int velocity[2];
-	int (*shape)[4][4][4];
 	int color;
 	//int blockSize;
 	int _fallSpeed;		//changes when to fall
 	bool hasLanded = false;
 	WallKickData *WallKick_Data;
 	bool canFloorKick;
+protected:
+	int shapeSize;
+	int rotation;
+	int velocity[2];
+};
+
+class GhostTetromino :
+	public Tetromino
+{
+public:
+	GhostTetromino();
+	~GhostTetromino();
+	virtual void draw(Tetromino T, SDL_Renderer * renderer);
+	void update(GridClass* grid, Tetromino T);
 };

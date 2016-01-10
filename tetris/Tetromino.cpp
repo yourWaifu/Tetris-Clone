@@ -42,7 +42,12 @@ void Tetromino::draw(SDL_Renderer* renderer)
 	}*/
 	
 	setDrawColor(renderer, color);
+	drawShape(renderer);
 	
+}
+
+void Tetromino::drawShape(SDL_Renderer* renderer)
+{
 	for (int fh = 0; fh < shapeSize; fh++) {
 		for (int fw = 0; fw < shapeSize; fw++) {
 			if ((*shape)[rotation][fh][fw] > 0) {
@@ -92,15 +97,9 @@ void Tetromino::rotate(GridClass * grid, int direction)
 	}
 }
 
-void Tetromino::hardDrop(GridClass * grid)
+void Tetromino::hardDrop(GridClass * grid, Tetromino *Hint)
 {
-	for (int i = 1; i < grid->h; i++) {
-		velocity[1] = i;
-		if (detectCollision(grid, falling)) {
-			y += velocity[1] - 1;
-			break;
-		}
-	}
+	y = Hint->y;
 }
 
 bool Tetromino::wallKick(GridClass * grid, int direction)

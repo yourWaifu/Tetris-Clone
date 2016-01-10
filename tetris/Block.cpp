@@ -2,46 +2,47 @@
 
 void setDrawColor(SDL_Renderer* renderer,int c)
 {
-	Uint8 red = 0;
-	Uint8 green = 0;
-	Uint8 blue = 0;
-	Uint8 a = 0;
+	SDL_Color color = getDrawColor(c);
+	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+}
+
+SDL_Color getDrawColor(int c) {
+	SDL_Color color = {0, 0, 0};
 
 	switch (c) {
 	//color nothing
-	case 0: red = 25;
-		green = 25;
-		blue = 25;
+	case 0: color.r = 25;
+		color.g = 25;
+		color.b = 25;
 		break;
 		//color: cyan
-	case 1: green = 255;
-		blue = 255;
+	case 1: color.g = 255;
+		color.b = 255;
 		break;
 		//color blue
-	case 2: blue = 255;
+	case 2: color.b = 255;
 		break;
 		//color orange
-	case 3: red = 255;
-		green = 127;
+	case 3: color.r = 255;
+		color.g = 127;
 		break;
 		//color yellow
-	case 4: red = 255;
-		green = 255;
+	case 4: color.r = 255;
+		color.g = 255;
 		break;
 		//color lime
-	case 5: red = 191;
-		green = 255;
+	case 5: color.r = 191;
+		color.g = 255;
 		break;
 		//color purple
-	case 6: red = 128;
-		blue = 128;
+	case 6: color.r = 128;
+		color.b = 128;
 		break;
 		//color red
-	case 7: red = 255;
+	case 7: color.r = 255;
 		break;
 	}
-
-	SDL_SetRenderDrawColor(renderer, red, green, blue, a);
+	return color;
 }
 
 void Block::draw(SDL_Renderer* renderer, int x, int y)

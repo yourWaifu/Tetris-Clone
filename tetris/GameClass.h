@@ -58,9 +58,11 @@ private:
 	Tetromino FallingTetrimno;
 	Tetromino HoldingTetrimno;
 	Tetromino NextTetrimno;
+	GhostTetromino HardDropHint;
 	GridClass grid;								//the grid, what else do you think it is?
 	unsigned int seed;
 	int bag[4];
+	bool canShowGhostPiece;
 	//random
 	std::mt19937 mt;
 	uint32_t seed_v;

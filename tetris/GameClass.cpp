@@ -210,6 +210,7 @@ void GameClass::startGame()
 		randomTetrominoesIndex[i] = 'n/a';
 	}
 	timeForNextFall = msTime + 1000;
+	canShowGhostPiece = true;
 
 	//UI
 	InGameUI.changeFont("fonts/calibri.ttf", 24);
@@ -254,6 +255,7 @@ void GameClass::gameDraw()
 	//draw grid
 	grid.draw(renderer);
 	//draw tetrimino
+	if (canShowGhostPiece) HardDropHint.draw(FallingTetrimno, renderer);
 	FallingTetrimno.draw(renderer);
 	HoldingTetrimno.draw(renderer);
 	//draw next Tetrimno
@@ -287,7 +289,7 @@ void GameClass::processInput()
 				}
 				if (states[SDL_GetScancodeFromKey(holdTetromino)])
 					hold();
-				if (event.key.keysym.sym == hardDrop) FallingTetrimno.hardDrop(&grid);
+				if (event.key.keysym.sym == hardDrop) FallingTetrimno.hardDrop(&grid, &HardDropHint);
 				if (event.key.keysym.sym == rotateClockwise) FallingTetrimno.rotate(&grid, clockwise);
 				if (event.key.keysym.sym == rotateCounterClockwise) FallingTetrimno.rotate(&grid, counterClockwise);
 				break;
@@ -344,6 +346,7 @@ void GameClass::updateGame()
 			}
 		}							//end of gettting random tetriminos
 	}
+	if (100 < level) canShowGhostPiece = false;
 	if (timeForNextFall <= msTime) {		//when to fall
 		FallingTetrimno.fall(&grid);
 		timeForNextFall = msTime + 200;	//r3emembew to change this valve
@@ -360,6 +363,7 @@ void GameClass::updateGame()
 		FallingTetrimno.move(&grid, potentialVelocity[0]);
 		timeForNextMove = msTime + 200;
 	}
+	HardDropHint.update(&grid, FallingTetrimno);
 }
 
 void GameClass::hold()

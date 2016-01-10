@@ -12,6 +12,7 @@ different numbers mean different color
 7 = red
 */
 void setDrawColor(SDL_Renderer* renderer, int c);
+SDL_Color getDrawColor(int c);
 //this only sets colors. I should put this somewhere else, but I don't know where
 
 
