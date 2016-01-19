@@ -12,6 +12,7 @@ in the future I plan to make it so that you can change the controls
 
 #Plans for the future
 * add speed timings such as internal gravity and delays
+* add stipple alpha to ghost piece
 * add score
   * add combo multiper
   * add score level multiplier
@@ -20,6 +21,8 @@ in the future I plan to make it so that you can change the controls
   * input opinions
   * video opinions
     * screen resolution opinions
+    * turn stipple alpha on ghost piece on or off
   * game opinions
     * ghost piece shade amount
+    * round down speed timings or round both up or down speed timings based on the speed timing its rounding (this shouldn't make a big different but I'll people the opinion).
 * add replay system
