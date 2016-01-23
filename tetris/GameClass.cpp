@@ -395,11 +395,8 @@ void GameClass::updateGame()
 	}
 	while (timeForNextFall <= currentTime && !FallingTetrimno.returnHasLanded()) {		//when to fall
 		FallingTetrimno.fall(&grid);
-
 		if (FallingTetrimno.returnHasLanded())
 			timeToLock = msTime + Delays_Data.getRoundedDataInUnitOfTimeFromLevel(1000, level, Delays::Lock);
-		std::string dbstring = std::to_string(Delays_Data.getRoundedDataInUnitOfTimeFromLevel(1000, level, Delays::Lock)) + '\n';
-		OutputDebugString(dbstring.c_str());
 		timeForNextFall += InternalGravity_Data.getRoundedDataInUnitOfTimeFromLevel(timerFrequency, level);
 	}
 	if (FallingTetrimno.returnHasLanded()) {
@@ -446,6 +443,7 @@ void GameClass::spawnNewFallingTetromino()
 	if (FallingTetrimno.detectCollision(&grid, spawning)) {
 		*gameState = lost;
 	}
+	timeForNextFall = currentFrameTime + InternalGravity_Data.getRoundedDataInUnitOfTimeFromLevel(timerFrequency, level);	//this is used to synchronize the timings
 }
 
 /* this was for debugging a bug where losing made the game literally unplayable
