@@ -11,7 +11,6 @@ this is just a personal project to help me get more experience with programming.
 in the future I plan to make it so that you can change the controls
 
 #Plans for the future
-* fix speed timings bugs
 * add stipple alpha to ghost piece
 * add score
   * add combo multiper
