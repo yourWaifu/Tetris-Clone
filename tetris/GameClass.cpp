@@ -18,7 +18,7 @@ GameClass::~GameClass()
 
 void GameClass::startGame()
 {
-	//first, we define all Tetrominoes aka hardcode all Tetrominoes and it's wall kick data
+	//first, we define all Tetrominoes aka hardcode all Tetrominoes and it's wall kick data and Speed Timings
 	/*
 	different numbers mean different color
 	0 = n/a empty space
@@ -190,16 +190,64 @@ void GameClass::startGame()
 	//now we put them into an array of pointers
 	allTetrominoes = { &I, &J, &L, &O, &S, &T, &Z };
 
-	//define time variables.
+	//***define time variables.***
 	previousFrameTime = 0;
 	currentFrameTime = SDL_GetPerformanceCounter();
+	timerFrequency = SDL_GetPerformanceFrequency();
 	msTime = SDL_GetTicks();
+	timeForNextFall = currentFrameTime + timerFrequency;
 
-	//random
+	int internalGravity[InternalGravity::numOfLevels][InternalGravity::numOfTypesPlusLevel] = {
+		{0,		1024},
+		{30,	1536},
+		{35,	2048},
+		{40,	2560},
+		{50,	3072},
+		{60,	4096},
+		{70,	8192},
+		{80,	12288},
+		{90,	16384},
+		{100,	20480},
+		{120,	24576},
+		{140,	28672},
+		{160,	32768},
+		{170,	36864},
+		{200,	1024},
+		{220,	8192},
+		{230,	16384},
+		{233,	24576},
+		{236,	32768},
+		{239,	40960},
+		{243,	49152},
+		{247,	57344},
+		{251,	65536},
+		{300,	131072},
+		{330,	196608},
+		{360,	262144},
+		{400,	327680},
+		{420,	262144},
+		{450,	196608},
+		{500,	1310720}
+	};
+	InternalGravity_Data.data = &internalGravity;
+	int Delays[Delays::numOfLevels][Delays::numOfTypesPlusLevel] = {
+		{0,		14,	30},
+		{500,	8,	30},
+		{600,	8,	30},
+		{700,	8,	30},
+		{800,	8,	30},
+		{900,	6,	17},
+		{1000,	6,	17},
+		{1100,	6,	15},
+		{1200,	6,	15}
+	};
+	Delays_Data.data = &Delays;
+
+	//***random***
 	srand((unsigned int)time(NULL) + (unsigned int)SDL_GetPerformanceCounter());
 	seed_v = rand() + (uint32_t)time(NULL);
 	mt.seed(seed_v);
-	//we have to state that the game is now running and that it's the first level, clear everything else
+	//***we have to state that the game is now running and that it's the first level, clear everything else***
 	level = -3;
 	bag[0] = 6; bag[1] = 4; bag[2] = 6; bag[3] = 4; 
 	grid.clear();
@@ -209,14 +257,13 @@ void GameClass::startGame()
 	for (int i = 0; i < sizeOfRandomTetrominoesIndex; i++) {		//makes everything in the randomTetrominoesIndex array = n/a
 		randomTetrominoesIndex[i] = 'n/a';
 	}
-	timeForNextFall = msTime + 1000;
 	canShowGhostPiece = true;
 
-	//UI
+	//***UI***
 	InGameUI.changeFont("fonts/calibri.ttf", 24);
 	InGameUI.changeColor(255, 255, 255);
 
-	//loop time
+	//***loop time***
 	while (*gameState != lost && *gameState != quit) {
 		gameLoop();
 	}
@@ -230,12 +277,12 @@ void GameClass::gameLoop()
 	currentFrameTime = SDL_GetPerformanceCounter();
 	//debug code starts here
 	double gameLoopdt = (double)currentFrameTime - previousFrameTime;	//loss of data, but I don't know how to fix
-	gameLoopdt = gameLoopdt / SDL_GetPerformanceFrequency();
+	gameLoopdt = gameLoopdt / timerFrequency;
 	/*//start of debugcode
 	std::string dtstring = std::to_string(gameLoopdt) + '\n';
 	OutputDebugString(dtstring.c_str());
 	//end of debi*/
-	const float minFrametime = SDL_GetPerformanceFrequency() / maxfps;
+	const float minFrametime = timerFrequency / maxfps;
 	currentTime = SDL_GetPerformanceCounter();
 	//remember to take a look at http://gameprogrammingpatterns.com/game-loop.html
 	while ((currentTime - currentFrameTime) < minFrametime) {
@@ -286,9 +333,9 @@ void GameClass::processInput()
 				if ((states[SDL_GetScancodeFromKey(moveRight)] || states[SDL_GetScancodeFromKey(moveRight2)]) || (states[SDL_GetScancodeFromKey(moveLeft)] || states[SDL_GetScancodeFromKey(moveLeft2)])) {
 					potentialVelocity[0] = (states[SDL_GetScancodeFromKey(moveRight)] || states[SDL_GetScancodeFromKey(moveRight2)]) - (states[SDL_GetScancodeFromKey(moveLeft)] || states[SDL_GetScancodeFromKey(moveLeft2)]);
 					timeForNextMove = msTime;
+					DAS = 0;
 				}
-				if (states[SDL_GetScancodeFromKey(holdTetromino)])
-					hold();
+				if (states[SDL_GetScancodeFromKey(holdTetromino)]) hold();
 				if (event.key.keysym.sym == hardDrop) FallingTetrimno.hardDrop(&grid, &HardDropHint);
 				if (event.key.keysym.sym == rotateClockwise) FallingTetrimno.rotate(&grid, clockwise);
 				if (event.key.keysym.sym == rotateCounterClockwise) FallingTetrimno.rotate(&grid, counterClockwise);
@@ -305,7 +352,7 @@ void GameClass::processInput()
 
 void GameClass::updateGame()
 {
-	if (FallingTetrimno.haslanded() || (randomTetrominoesIndex[0] == 'n/a' && randomTetrominoesIndex[1] != 'n/a')) {
+	if (FallingTetrimno.returnIsLocked() || (randomTetrominoesIndex[0] == 'n/a' && randomTetrominoesIndex[1] != 'n/a')) {
 		for (int i = 0; i < sizeOfRandomTetrominoesIndex; i++) {
 			randomTetrominoesIndex[i] = randomTetrominoesIndex[i + 1];
 		}
@@ -346,11 +393,18 @@ void GameClass::updateGame()
 			}
 		}							//end of gettting random tetriminos
 	}
-	if (100 < level) canShowGhostPiece = false;
-	if (timeForNextFall <= msTime) {		//when to fall
+	while (timeForNextFall <= currentTime && !FallingTetrimno.returnHasLanded()) {		//when to fall
 		FallingTetrimno.fall(&grid);
-		timeForNextFall = msTime + 200;	//r3emembew to change this valve
-		if (FallingTetrimno.haslanded() == true) {	//remove filled lines, and increment score and level
+
+		if (FallingTetrimno.returnHasLanded())
+			timeToLock = msTime + Delays_Data.getRoundedDataInUnitOfTimeFromLevel(1000, level, Delays::Lock);
+		std::string dbstring = std::to_string(Delays_Data.getRoundedDataInUnitOfTimeFromLevel(1000, level, Delays::Lock)) + '\n';
+		OutputDebugString(dbstring.c_str());
+		timeForNextFall += InternalGravity_Data.getRoundedDataInUnitOfTimeFromLevel(timerFrequency, level);
+	}
+	if (FallingTetrimno.returnHasLanded()) {
+		FallingTetrimno.land(&grid, timeToLock, msTime);
+		if (FallingTetrimno.returnIsLocked()) {		//remove filled lines, and increment score and level
 													//TO DO add score variable
 			int numberOfFilledLines = grid.detectFilledLine();
 			if (0 < numberOfFilledLines) {
@@ -359,19 +413,22 @@ void GameClass::updateGame()
 			canHoldTetromino = true;
 		}
 	}
-	if (timeForNextMove <= msTime) { 
+	while (timeForNextMove <= msTime && potentialVelocity[0] != 0) {
 		FallingTetrimno.move(&grid, potentialVelocity[0]);
-		timeForNextMove = msTime + 200;
+		if (!DAS) {
+			timeForNextMove += Delays_Data.getRoundedDataInUnitOfTimeFromLevel(1000, level, Delays::DAS);
+			++DAS;
+		} else
+			timeForNextMove += 16;
 	}
+	if (100 < level) canShowGhostPiece = false;
 	HardDropHint.update(&grid, FallingTetrimno);
 }
 
 void GameClass::hold()
 {
-	if (canHoldTetromino == false)
-		return;
-	if (randomTetrominoesIndex[0] == 'n/a')
-		return;
+	if (canHoldTetromino == false) return;
+	if (randomTetrominoesIndex[0] == 'n/a') return;
 	int t = randomTetrominoesIndex[0];
 	randomTetrominoesIndex[0] = holdingTetrominoIndex;
 	holdingTetrominoIndex = t;

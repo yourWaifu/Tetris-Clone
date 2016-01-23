@@ -132,6 +132,7 @@
     <ClCompile Include="GridClass.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SpeedTimingData.cpp" />
     <ClCompile Include="Tetromino.cpp" />
     <ClCompile Include="TextComponent.cpp" />
   </ItemGroup>
@@ -140,6 +141,7 @@
     <ClInclude Include="GameClass.h" />
     <ClInclude Include="GridClass.h" />
     <ClInclude Include="InputComponent.h" />
+    <ClInclude Include="SpeedTimingData.h" />
     <ClInclude Include="Tetromino.h" />
     <ClInclude Include="TextComponent.h" />
   </ItemGroup>

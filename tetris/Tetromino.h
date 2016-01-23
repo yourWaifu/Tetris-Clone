@@ -49,14 +49,16 @@ public:
 	int returnColor() { return color; }
 	int returnShapeSize() { return shapeSize; }
 	//void changeVelocity(unsigned int index, int value);
-	bool haslanded();
+	bool returnIsLocked();
+	bool returnHasLanded();
+	void land(GridClass* grid, Uint32 timeToLock, Uint32 currentTime);
 	int y = 3;
 	int x = 3;
 	int(*shape)[4][4][4];		//please don't ever change this value while in-game
 private:
 	bool wallKick(GridClass * grid, int direction);
 	//places the tetromino onto the grid
-	void land(GridClass* grid);
+	void lock(GridClass* grid);
 	int _h;
 	int _w;
 	int gridx;
@@ -64,6 +66,7 @@ private:
 	int color;
 	//int blockSize;
 	int _fallSpeed;		//changes when to fall
+	bool isLocked = false;
 	bool hasLanded = false;
 	WallKickData *WallKick_Data;
 	bool canFloorKick;

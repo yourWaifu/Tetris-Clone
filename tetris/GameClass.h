@@ -3,9 +3,14 @@
 #include <SDL\SDL.h>
 #include <array>
 #include <string>
-//#include <windows.h>	//this is for debugging only. I think
+#include <windows.h>	//this is for debugging only. I think
+/*here is the debug code I like to use
+std::string dbstring = std::to_string(number) + '\n';
+OutputDebugString(dbstring.c_str());
+*/
 #include <random>
 #include <chrono>
+#include "SpeedTimingData.h"
 #include "TextComponent.h"
 #include "Tetromino.h"
 
@@ -37,6 +42,7 @@ private:
 	Uint64 previousFrameTime;
 	Uint64 currentFrameTime;
 	Uint64 currentTime;
+	Uint64 timerFrequency;
 	Uint32 msTime;
 	const float maxfps = 480;
 	state* gameState;
@@ -46,8 +52,12 @@ private:
 	SDL_Renderer *renderer;
 	SDL_Event event; //I have a feeling that this shouldn't be here
 	//gameplay variables
-	Uint32 timeForNextFall;						//tells us when the block is going to fall in ms
+	InternalGravity InternalGravity_Data;
+	Delays Delays_Data;
+	Uint64 timeForNextFall;						//tells us when the block is going to fall in ms
 	Uint32 timeForNextMove;
+	Uint8 DAS;
+	Uint32 timeToLock;
 	int potentialVelocity[2];
 	int level = 0;
 	int holdingTetrominoIndex;

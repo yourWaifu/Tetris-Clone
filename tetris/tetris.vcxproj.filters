@@ -39,6 +39,9 @@
     <ClCompile Include="GhostTetromino.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SpeedTimingData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameClass.h">
@@ -57,6 +60,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tetromino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpeedTimingData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

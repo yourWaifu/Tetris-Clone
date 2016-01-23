@@ -61,6 +61,8 @@ void startPlaying(SDL_Rect *Size, SDL_Window *win, SDL_Renderer *ren, state* sta
 
 /*
 The carzy to-do list
+big bug		timings are off you'll get instead gravity at level 100
+bug maybe?	the bag doesn't feel like it's working
 add speed timings such as internal gravity and delays
 add score
 add combo multiper

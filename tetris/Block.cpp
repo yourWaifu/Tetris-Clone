@@ -54,7 +54,7 @@ void Block::draw(SDL_Renderer* renderer, int x, int y)
 
 Block::Block()
 {
-	BlockRect.w = blockSize / blockBorder;
-	BlockRect.h = blockSize / blockBorder;
+	BlockRect.w = (int)(blockSize / blockBorder);
+	BlockRect.h = (int)(blockSize / blockBorder);
 	BorderPxSize = blockSize - BlockRect.w;
 }
