@@ -45,16 +45,43 @@ SDL_Color getDrawColor(int c) {
 	return color;
 }
 
-void Block::draw(SDL_Renderer* renderer, int x, int y)
-{
-	BlockRect.x = x + BorderPxSize;
-	BlockRect.y = y - 40 + BorderPxSize; //BlockRect.y = y * 20 * 4  this is to not show the top five blocks so that the blocks spawn at the top
-	SDL_RenderFillRect(renderer, &BlockRect);
-}
-
 Block::Block()
 {
 	BlockRect.w = (int)(blockSize / blockBorder);
 	BlockRect.h = (int)(blockSize / blockBorder);
 	BorderPxSize = blockSize - BlockRect.w;
+}
+
+void Block::updateCoordinates(int x, int y) {
+	BlockRect.x = x + BorderPxSize;
+	BlockRect.y = y - 40 + BorderPxSize; //BlockRect.y = y * 20 * 4  this is to not show the top five blocks so that the blocks spawn at the top
+}
+
+void Block::draw(SDL_Renderer* renderer, int x, int y, bool SrippledAlpha)
+{
+	if (SrippledAlpha) {
+		drawSrippledAlpha(renderer, x, y);
+		return;
+	}
+	updateCoordinates(x, y);
+	SDL_RenderFillRect(renderer, &BlockRect);
+}
+
+void Block::drawSrippledAlpha(SDL_Renderer* renderer, int x, int y)
+{
+	updateCoordinates(x, y);
+	const Uint32 area = BlockRect.w * BlockRect.h;
+	const Uint32 numOfPoints = (Uint32)(area/2 + 1);
+	SDL_Point *points = new SDL_Point[numOfPoints];
+	int j = 0;
+	for (int i = 0; i < area; i++) {
+		const Uint32 fx = i % BlockRect.w;
+		const Uint32 fy = (Uint32)(i / BlockRect.w);
+		if ((fx + fy) % 2 == 0) {
+			points[j].x = BlockRect.x + fx;
+			points[j].y = BlockRect.y + fy;
+			++j;
+		}
+	}
+	SDL_RenderDrawPoints(renderer, points, j + 1);
 }

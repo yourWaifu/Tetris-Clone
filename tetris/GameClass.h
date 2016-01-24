@@ -1,8 +1,8 @@
 #pragma once
-#include <iostream>
+//#include <iostream>
 #include <SDL\SDL.h>
 #include <array>
-#include <string>
+//#include <string>
 //#include <windows.h>	//this is for debugging only. I think
 /*here is the debug code I like to use
 std::string dbstring = std::to_string(number) + '\n';

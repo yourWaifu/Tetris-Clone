@@ -18,8 +18,10 @@ SDL_Color getDrawColor(int c);
 
 struct Block{
 	Block();
-	void draw(SDL_Renderer* renderer, int x, int y);
+	void draw(SDL_Renderer* renderer, int x, int y, bool SrippledAlpha = false);
+	void drawSrippledAlpha(SDL_Renderer* renderer, int x, int y);
 private:
+	void updateCoordinates(int x, int y);
 	SDL_Rect BlockRect;
 	const int blockSize = 20;
 	const float blockBorder = 1.1f;

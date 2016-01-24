@@ -46,13 +46,13 @@ void Tetromino::draw(SDL_Renderer* renderer)
 	
 }
 
-void Tetromino::drawShape(SDL_Renderer* renderer)
+void Tetromino::drawShape(SDL_Renderer* renderer, bool SrippledAlpha)
 {
 	for (int fh = 0; fh < shapeSize; fh++) {
 		for (int fw = 0; fw < shapeSize; fw++) {
 			if ((*shape)[rotation][fh][fw] > 0) {
 				Block b;
-				b.draw(renderer, (x + fw) * 20, (y + fh) * 20);
+				b.draw(renderer, (x + fw) * 20, (y + fh) * 20, SrippledAlpha);
 			}
 		}
 	}
@@ -196,4 +196,5 @@ WallKickData::WallKickData(int(&_clockwiseData)[4][5][2], int(&_counterClockwise
 
 WallKickData::WallKickData()
 {
+
 }

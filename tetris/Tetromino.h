@@ -38,7 +38,7 @@ public:
 	//void defineShape(int(&shape)[4][4][4]);
 	//this will draw the tetromino
 	virtual void draw(SDL_Renderer* renderer);
-	void drawShape(SDL_Renderer* renderer);
+	void drawShape(SDL_Renderer* renderer, bool SrippledAlpha = false);
 	void fall(GridClass* grid);
 	void move(GridClass* grid, int velocity);
 	void rotate(GridClass* grid, int direction);
