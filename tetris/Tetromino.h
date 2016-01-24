@@ -17,20 +17,20 @@ enum reason {
 
 struct WallKickData
 {
-	WallKickData(int (&_clockwiseData)[4][5][2], int (&_counterClockwiseData)[4][5][2]);
+	WallKickData(Sint8(&_clockwiseData)[4][5][2], Sint8(&_counterClockwiseData)[4][5][2]);
 	WallKickData();
 	const static unsigned int states = 4;
 	const static unsigned int tests = 5;
 	const static unsigned int positions = 2;
-	int (*clockwiseData)[states][tests][positions];
-	int (*counterClockwiseData)[states][tests][positions];
+	Sint8(*clockwiseData)[states][tests][positions];
+	Sint8(*counterClockwiseData)[states][tests][positions];
 };
 
 //here is a list of tetrominos I, J, L, O, S, T, Z
 class Tetromino
 {
 public:
-	Tetromino(int h, int w, int(&shape)[4][4][4], int _color, WallKickData &_WallKickData);
+	Tetromino(int h, int w, Uint8(&shape)[4][4][4], Uint8 _color, WallKickData &_WallKickData);
 	Tetromino();
 	~Tetromino();
 
@@ -54,7 +54,7 @@ public:
 	void land(GridClass* grid, Uint32 timeToLock, Uint32 currentTime);
 	int y = 3;
 	int x = 3;
-	int(*shape)[4][4][4];		//please don't ever change this value while in-game
+	Uint8(*shape)[4][4][4];		//please don't ever change this value while in-game
 private:
 	bool wallKick(GridClass * grid, int direction);
 	//places the tetromino onto the grid
@@ -63,7 +63,7 @@ private:
 	int _w;
 	int gridx;
 	int gridy;
-	int color;
+	Uint8 color;
 	//int blockSize;
 	int _fallSpeed;		//changes when to fall
 	bool isLocked = false;

@@ -26,7 +26,7 @@ struct InternalGravity : public SpeedTimingData {
 	*	in the 2nd calumn of data is the internal Gravity
 	we can hardcode the ms per cell, but for now lets just use 1/65536 of a G
 	*/
-	int(*data)[numOfLevels][numOfTypesPlusLevel];
+	unsigned long(*data)[numOfLevels][numOfTypesPlusLevel];
 	int getIndexFromLevel(int level);
 	virtual int getDataFromLevel(int level);
 	virtual double getDataInUnitOfTimeFromLevel(Uint64 frequency, int level);

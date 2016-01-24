@@ -72,7 +72,7 @@ void Block::drawSrippledAlpha(SDL_Renderer* renderer, int x, int y)
 	updateCoordinates(x, y);
 	const Uint32 area = BlockRect.w * BlockRect.h;
 	const Uint32 numOfPoints = (Uint32)(area/2 + 1);
-	SDL_Point *points = new SDL_Point[numOfPoints];
+	SDL_Point * points = new SDL_Point[numOfPoints];
 	int j = 0;
 	for (int i = 0; i < area; i++) {
 		const Uint32 fx = i % BlockRect.w;
@@ -84,4 +84,5 @@ void Block::drawSrippledAlpha(SDL_Renderer* renderer, int x, int y)
 		}
 	}
 	SDL_RenderDrawPoints(renderer, points, j + 1);
+	delete points;
 }

@@ -32,13 +32,13 @@ void GameClass::startGame()
 	wall kicks are when the player attempts to rotate a tetromino, but the position 
 	*/
 	//wall kick data
-	int normalClockwiseWallKickData[WallKickData::states][WallKickData::tests][WallKickData::positions] = {
+	Sint8 normalClockwiseWallKickData[WallKickData::states][WallKickData::tests][WallKickData::positions] = {
 		{ { 0, 0 },{ 1, 0 },{ 1,1 },{ 0,-2 },{ 1,-2 } },
 		{ { 0, 0 },{ 1, 0 },{ 1,-1 },{ 0,2 },{ 1,2 } },
 		{ { 0, 0 },{ -1, 0 },{ -1,1 },{ 0,-2 },{ -1,-2 } },
 		{ { 0, 0 },{ -1, 0 },{ -1,-1 },{ 0,2 },{ -1,2 } }
 	};
-	int normalCounterClockwiseData[WallKickData::states][WallKickData::tests][WallKickData::positions] = {
+	Sint8 normalCounterClockwiseData[WallKickData::states][WallKickData::tests][WallKickData::positions] = {
 		{ { 0, 0 },{ -1, 0 },{ -1,1 },{ 0,-2 },{ -1,-2 } },
 		{ { 0, 0 },{ 1, 0 },{ 1,-1 },{ 0,2 },{ 1,2 } },
 		{ { 0, 0 },{ 1, 0 },{ 1,1 },{ 0,-2 },{ 1,-2 } },
@@ -46,13 +46,13 @@ void GameClass::startGame()
 	};
 	WallKickData NormalWallKickData(normalClockwiseWallKickData, normalCounterClockwiseData);
 
-	int shapeIClockwiseWallKickData[WallKickData::states][WallKickData::tests][WallKickData::positions] = {
+	Sint8 shapeIClockwiseWallKickData[WallKickData::states][WallKickData::tests][WallKickData::positions] = {
 		{ { 0, 0 },{ -2, 0 },{ 1, 0 },{ -2,-1 },{ 1,2 } },
 		{ { 0, 0 },{ -2, 0 },{ 1, 0 },{ 1,-2 },{ -2,1 } },
 		{ { 0, 0 },{ -1, 0 },{ 2, 0 },{ -1,-2 },{ 2,1 } },
 		{ { 0, 0 },{ 2, 0 },{ -1, 0 },{ 2,-1 },{ -1,1 } }
 	};
-	int shapeICounterClockwiseWallKickData[WallKickData::states][WallKickData::tests][WallKickData::positions] = {
+	Sint8 shapeICounterClockwiseWallKickData[WallKickData::states][WallKickData::tests][WallKickData::positions] = {
 		{ { 0, 0 },{ 2, 0 },{ -1, 0 },{ 2,-1 },{ -1,2 } },
 		{ { 0, 0 },{ -2, 0 },{ 1, 0 },{ -2,-1 },{ 1,1 } },
 		{ { 0, 0 },{ 1, 0 },{ -2, 0 },{ 1,-2 },{ -2,1 } },
@@ -60,47 +60,47 @@ void GameClass::startGame()
 	};
 	WallKickData shapeIWallKickData(shapeIClockwiseWallKickData, shapeICounterClockwiseWallKickData);
 
-	int shapeI[4][4][4] = {	{	{ 0, 0, 0, 0 }, 
-								{ 1, 1, 1, 1 },
-								{ 0, 0, 0, 0 },
-								{ 0, 0, 0, 0 }	},
+	Uint8 shapeI[4][4][4] = {	{	{ 0, 0, 0, 0 },
+									{ 1, 1, 1, 1 },
+									{ 0, 0, 0, 0 },
+									{ 0, 0, 0, 0 }	},
 								
-							{	{ 0, 0, 1, 0 },
-								{ 0, 0, 1, 0 },
-								{ 0, 0, 1, 0 },
-								{ 0, 0, 1, 0 }	},
+								{	{ 0, 0, 1, 0 },
+									{ 0, 0, 1, 0 },
+									{ 0, 0, 1, 0 },
+									{ 0, 0, 1, 0 }	},
 
-							{	{ 0, 0, 0, 0 },
-								{ 0, 0, 0, 0 },
-								{ 1, 1, 1, 1 },
-								{ 0, 0, 0, 0 }	},
+								{	{ 0, 0, 0, 0 },
+									{ 0, 0, 0, 0 },
+									{ 1, 1, 1, 1 },
+									{ 0, 0, 0, 0 }	},
 	
-							{	{ 0, 1, 0, 0 },
-								{ 0, 1, 0, 0 },
-								{ 0, 1, 0, 0 },
-								{ 0, 1, 0, 0 }	}	};
+								{	{ 0, 1, 0, 0 },
+									{ 0, 1, 0, 0 },
+									{ 0, 1, 0, 0 },
+									{ 0, 1, 0, 0 }	}	};
 	//piece: I, color: cyan. It's a line//gets it's own wallkickdata
 	Tetromino I(1, 4, shapeI, 1, shapeIWallKickData);
 	
-	int shapeJ[4][4][4] = {	{	{ 0, 0, 0 },
-								{ 2, 2, 2 },
-								{ 0, 0, 2 }	},
+	Uint8 shapeJ[4][4][4] = {	{	{ 0, 0, 0 },
+									{ 2, 2, 2 },
+									{ 0, 0, 2 }	},
 
-							{	{ 0, 2, 0 },
-								{ 0, 2, 0 },
-								{ 2, 2, 0 }	},
+								{	{ 0, 2, 0 },
+									{ 0, 2, 0 },
+									{ 2, 2, 0 }	},
 	
-							{	{ 2, 0, 0 },
-								{ 2, 2, 2 },
-								{ 0, 0, 0 } },
+								{	{ 2, 0, 0 },
+									{ 2, 2, 2 },
+									{ 0, 0, 0 } },
 	
-							{	{ 0, 2, 2 },
-								{ 0, 2, 0 },
-								{ 0, 2, 0 }	}	};
+								{	{ 0, 2, 2 },
+									{ 0, 2, 0 },
+									{ 0, 2, 0 }	}	};
 	//piece J, color blue. it's a reverse L
 	Tetromino J(2, 3, shapeJ, 2, NormalWallKickData);
 
-	int shapeL[4][4][4] = { {	{ 0, 0, 0 },
+	Uint8 shapeL[4][4][4] = { {	{ 0, 0, 0 },
 								{ 3, 3, 3 },
 								{ 3, 0, 0 }	},
 
@@ -118,7 +118,7 @@ void GameClass::startGame()
 	//piece L, color orange. it's a L
 	Tetromino L(2, 3, shapeL, 3, NormalWallKickData);
 
-	int shapeO[4][4][4] = { {	{ 0, 0, 0 },
+	Uint8 shapeO[4][4][4] = { {	{ 0, 0, 0 },
 								{ 0, 4, 4 },
 								{ 0, 4, 4 } },
 							{	{ 0, 0, 0 },
@@ -133,7 +133,7 @@ void GameClass::startGame()
 	//piece O, color yellow. it's a square of blocks
 	Tetromino O(3, 3, shapeO, 4, NormalWallKickData);		//having the O shape as 3 by 3 instead of 2 by 2 fixs a few bugs
 
-	int shapeS[4][4][4] = { {	{ 0, 0, 0 },
+	Uint8 shapeS[4][4][4] = { {	{ 0, 0, 0 },
 								{ 0, 5, 5 },
 								{ 5, 5, 0 }	},
 							
@@ -151,7 +151,7 @@ void GameClass::startGame()
 	//piece S, color lime. FUCK YOU squiggly line
 	Tetromino S(2, 3, shapeS, 5, NormalWallKickData);
 
-	int shapeT[4][4][4] = { {	{ 0, 0, 0 },
+	Uint8 shapeT[4][4][4] = { {	{ 0, 0, 0 },
 								{ 6, 6, 6 },
 								{ 0, 6, 0 }	},
 								
@@ -169,7 +169,7 @@ void GameClass::startGame()
 	//piece T, color purple. It's like a short t
 	Tetromino T(2, 3, shapeT, 6, NormalWallKickData);
 
-	int shapeZ[4][4][4] = { {	{ 0, 0, 0 },
+	Uint8 shapeZ[4][4][4] = { {	{ 0, 0, 0 },
 								{ 7, 7, 0 },
 								{ 0, 7, 7 } },
 
@@ -197,7 +197,7 @@ void GameClass::startGame()
 	msTime = SDL_GetTicks();
 	timeForNextFall = currentFrameTime + timerFrequency;
 
-	int internalGravity[InternalGravity::numOfLevels][InternalGravity::numOfTypesPlusLevel] = {
+	unsigned long internalGravity[InternalGravity::numOfLevels][InternalGravity::numOfTypesPlusLevel] = {
 		{0,		1024},
 		{30,	1536},
 		{35,	2048},

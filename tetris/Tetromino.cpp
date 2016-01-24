@@ -1,7 +1,7 @@
 #include "Tetromino.h"
 
 
-Tetromino::Tetromino(int h, int w, int(&_shape)[4][4][4], int _color, WallKickData &_WallKickData)
+Tetromino::Tetromino(int h, int w, Uint8(&_shape)[4][4][4], Uint8 _color, WallKickData &_WallKickData)
 {
 	_h = h;
 	_w = w;
@@ -105,7 +105,7 @@ void Tetromino::hardDrop(GridClass * grid, Tetromino *Hint)
 bool Tetromino::wallKick(GridClass * grid, int direction)
 {
 	bool wallkick = false;
-	int(*Data)[WallKickData::states][WallKickData::tests][WallKickData::positions] = 0 < direction ? WallKick_Data->clockwiseData : WallKick_Data->counterClockwiseData;
+	Sint8(*Data)[WallKickData::states][WallKickData::tests][WallKickData::positions] = 0 < direction ? WallKick_Data->clockwiseData : WallKick_Data->counterClockwiseData;
 	for (int testNumber = 1; testNumber < WallKickData::tests; testNumber++) {
 		velocity[0] = (*Data)[rotation][testNumber][0];
 		velocity[1] = (*Data)[rotation][testNumber][1];
@@ -188,7 +188,7 @@ void Tetromino::land(GridClass* grid, Uint32 timeToLock, Uint32 currentTime)
 	if ((timeToLock <= currentTime) && hasLanded) lock(grid);	//if it's time to lock and the Tetromino is on ground then we lock it
 }
 
-WallKickData::WallKickData(int(&_clockwiseData)[4][5][2], int(&_counterClockwiseData)[4][5][2])
+WallKickData::WallKickData(Sint8(&_clockwiseData)[4][5][2], Sint8(&_counterClockwiseData)[4][5][2])
 {
 	clockwiseData = &_clockwiseData;
 	counterClockwiseData = &_counterClockwiseData;
