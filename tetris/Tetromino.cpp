@@ -180,12 +180,11 @@ bool Tetromino::returnHasLanded()
 	return hasLanded;
 }
 
-void Tetromino::land(GridClass* grid, Uint32 timeToLock, Uint32 currentTime)
+void Tetromino::updateHasLanded(GridClass* grid)
 {
 	velocity[1] = 1;											//we aren't using velocity as speed but telling the detectCollision function to check if the Tetromino on top of anything
-	hasLanded = detectCollision(grid, falling) ? true : false;	//because we are checking Collision by faking a move down the Tetromino, we using the falling reason. if we detect collision, then the Tetromino has landed, else the Tetromino isn't on ground and in the air
+	hasLanded = detectCollision(grid, falling);					//because we are checking Collision by faking a move down the Tetromino, we using the falling reason. if we detect collision, then the Tetromino has landed, else the Tetromino isn't on ground and in the air
 	velocity[1] = 0;											//this is prevent any bugs, becuase I use the velocity variable for few things
-	if ((timeToLock <= currentTime) && hasLanded) lock(grid);	//if it's time to lock and the Tetromino is on ground then we lock it
 }
 
 WallKickData::WallKickData(Sint8(&_clockwiseData)[4][5][2], Sint8(&_counterClockwiseData)[4][5][2])

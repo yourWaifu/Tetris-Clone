@@ -38,6 +38,7 @@ private:
 	//gameplay functions
 	void hold();
 	void spawnNewFallingTetromino();
+	void updateTimeForNextFall();
 	//void lose();		//only used for debuging for now
 	Uint64 previousFrameTime;
 	Uint64 currentFrameTime;

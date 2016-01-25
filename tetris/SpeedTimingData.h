@@ -9,6 +9,7 @@ struct SpeedTimingData
 {
 	//some of those functions are the same becuase thay have to have there own data array
 	//if someone can come up with a way to fix this. tell me!!!
+	int getIndexFromLevel(int level, unsigned int *data, const size_t numOfLevels, const size_t numOfTypesPlusLevel);
 	virtual double getDataInUnitOfTimeFromLevel(Uint64 frequency, int level);
 	virtual Uint64 getRoundedDataInUnitOfTimeFromLevel(Uint64 frequency, int level);
 };
@@ -26,8 +27,7 @@ struct InternalGravity : public SpeedTimingData {
 	*	in the 2nd calumn of data is the internal Gravity
 	we can hardcode the ms per cell, but for now lets just use 1/65536 of a G
 	*/
-	unsigned long(*data)[numOfLevels][numOfTypesPlusLevel];
-	int getIndexFromLevel(int level);
+	unsigned int (*data)[numOfLevels][numOfTypesPlusLevel];
 	virtual int getDataFromLevel(int level);
 	virtual double getDataInUnitOfTimeFromLevel(Uint64 frequency, int level);
 };
@@ -44,8 +44,7 @@ struct Delays : public SpeedTimingData {
 	delays are expressed in 1/60 a.k.a. one frame of 60fps
 	data was taken from http://tetris.wikia.com/wiki/Tetris_The_Grand_Master_3_Terror-Instinct
 	*/
-	int(*data)[numOfLevels][numOfTypesPlusLevel];
-	int getIndexFromLevel(int level);
+	unsigned int(*data)[numOfLevels][numOfTypesPlusLevel];
 	int getDataFromLevel(int level, Type type);
 	virtual double getDataInUnitOfTimeFromLevel(Uint64 frequency, int level, Type type);
 	virtual int getRoundedDataInUnitOfTimeFromLevel(Uint64 frequency, int level, Type type);

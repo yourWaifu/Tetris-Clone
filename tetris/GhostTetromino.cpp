@@ -13,7 +13,7 @@ void GhostTetromino::draw(Tetromino T, SDL_Renderer * renderer)
 	shape = T.shape;
 	rotation = T.returnRotation();
 	SDL_Color tint;
-	tint.a = 85;
+	tint.a = 130;
 	SDL_Color color = getDrawColor(T.returnColor());
 	SDL_SetRenderDrawColor(renderer, (Uint8)(((float)tint.a / 255.0f ) * (float)color.r), (Uint8)(((float)tint.a / 255.0f) * (float)color.g), (Uint8)(((float)tint.a / 255.0f) * (float)color.b), 255);
 	drawShape(renderer, true);

@@ -61,7 +61,7 @@ void startPlaying(SDL_Rect *Size, SDL_Window *win, SDL_Renderer *ren, state* sta
 
 /*
 The carzy to-do list
-fix up speed timing data code
+remove updateTimeForNextFall() and so that it only shows up once in the code
 bug maybe?	the bag doesn't feel like it's working
 add speed timings such as internal gravity and delays
 add score

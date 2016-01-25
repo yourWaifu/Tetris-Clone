@@ -42,7 +42,8 @@ public:
 	void fall(GridClass* grid);
 	void move(GridClass* grid, int velocity);
 	void rotate(GridClass* grid, int direction);
-	void hardDrop(GridClass * grid, Tetromino *Hint);	//pieces drop instantly but not lock
+	void hardDrop(GridClass * grid, Tetromino *Hint);			//pieces drop instantly but not lock
+	void lock(GridClass* grid);									//places the tetromino onto the grid
 	void changeFallSpeed(int fallSpeed);
 	bool detectCollision(GridClass* grid, reason theReason);	//this detects if the tetromino is inside one another
 	int returnRotation() { return rotation; }
@@ -51,14 +52,12 @@ public:
 	//void changeVelocity(unsigned int index, int value);
 	bool returnIsLocked();
 	bool returnHasLanded();
-	void land(GridClass* grid, Uint32 timeToLock, Uint32 currentTime);
+	void updateHasLanded(GridClass* grid);
 	int y = 3;
 	int x = 3;
 	Uint8(*shape)[4][4][4];		//please don't ever change this value while in-game
 private:
 	bool wallKick(GridClass * grid, int direction);
-	//places the tetromino onto the grid
-	void lock(GridClass* grid);
 	int _h;
 	int _w;
 	int gridx;

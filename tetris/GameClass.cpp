@@ -197,7 +197,7 @@ void GameClass::startGame()
 	msTime = SDL_GetTicks();
 	timeForNextFall = currentFrameTime + timerFrequency;
 
-	unsigned long internalGravity[InternalGravity::numOfLevels][InternalGravity::numOfTypesPlusLevel] = {
+	unsigned int internalGravity[InternalGravity::numOfLevels][InternalGravity::numOfTypesPlusLevel] = {
 		{0,		1024},
 		{30,	1536},
 		{35,	2048},
@@ -230,7 +230,7 @@ void GameClass::startGame()
 		{500,	1310720}
 	};
 	InternalGravity_Data.data = &internalGravity;
-	int Delays[Delays::numOfLevels][Delays::numOfTypesPlusLevel] = {
+	unsigned int Delays[Delays::numOfLevels][Delays::numOfTypesPlusLevel] = {
 		{0,		14,	30},
 		{500,	8,	30},
 		{600,	8,	30},
@@ -397,18 +397,7 @@ void GameClass::updateGame()
 		FallingTetrimno.fall(&grid);
 		if (FallingTetrimno.returnHasLanded())
 			timeToLock = msTime + Delays_Data.getRoundedDataInUnitOfTimeFromLevel(1000, level, Delays::Lock);
-		timeForNextFall += InternalGravity_Data.getRoundedDataInUnitOfTimeFromLevel(timerFrequency, level);
-	}
-	if (FallingTetrimno.returnHasLanded()) {
-		FallingTetrimno.land(&grid, timeToLock, msTime);
-		if (FallingTetrimno.returnIsLocked()) {		//remove filled lines, and increment score and level
-													//TO DO add score variable
-			int numberOfFilledLines = grid.detectFilledLine();
-			if (0 < numberOfFilledLines) {
-				level += (int)(float)((double)numberOfFilledLines * 1.5);
-			}
-			canHoldTetromino = true;
-		}
+		updateTimeForNextFall();
 	}
 	while (timeForNextMove <= msTime && potentialVelocity[0] != 0) {
 		FallingTetrimno.move(&grid, potentialVelocity[0]);
@@ -417,6 +406,20 @@ void GameClass::updateGame()
 			++DAS;
 		} else
 			timeForNextMove += 16;
+	}
+	if (FallingTetrimno.returnHasLanded()) {
+		FallingTetrimno.updateHasLanded(&grid);
+		if ((timeToLock <= msTime) && FallingTetrimno.returnHasLanded()) FallingTetrimno.lock(&grid);	//if it's time to lock and the Tetromino is on ground then we lock it
+		if (FallingTetrimno.returnIsLocked()) {		//remove filled lines, and increment score and level
+													//TO DO add score variable
+			int numberOfFilledLines = grid.detectFilledLine();
+			if (0 < numberOfFilledLines) {
+				level += (int)(float)((double)numberOfFilledLines * 1.5);
+			}
+			canHoldTetromino = true;
+		}
+		if (timeForNextFall <= currentTime)
+			updateTimeForNextFall();
 	}
 	if (100 < level) canShowGhostPiece = false;
 	HardDropHint.update(&grid, FallingTetrimno);
@@ -444,6 +447,11 @@ void GameClass::spawnNewFallingTetromino()
 		*gameState = lost;
 	}
 	timeForNextFall = currentFrameTime + InternalGravity_Data.getRoundedDataInUnitOfTimeFromLevel(timerFrequency, level);	//this is used to synchronize the timings
+}
+
+void GameClass::updateTimeForNextFall()
+{
+	timeForNextFall += InternalGravity_Data.getRoundedDataInUnitOfTimeFromLevel(timerFrequency, level);
 }
 
 /* this was for debugging a bug where losing made the game literally unplayable
