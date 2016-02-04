@@ -27,7 +27,7 @@ in the future I plan to make it so that you can change the controls
       - [ ] *fast or slow DAS
       - [ ] *Sonic Drop or Standard hard drop
       - [ ] *TGM Rotation or SRS
-      - [ ] *soft drop speed (this will be a mitlypler)
+      - [ ] *soft drop speed 20 to 60 (this will be a multiplier)
  - [ ] quit
 - [ ] 3ds port
 - [ ] add score
