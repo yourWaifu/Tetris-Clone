@@ -195,7 +195,7 @@ void GameClass::startGame()
 	currentFrameTime = SDL_GetPerformanceCounter();
 	timerFrequency = SDL_GetPerformanceFrequency();
 	msTime = SDL_GetTicks();
-	timeForNextFall = currentFrameTime + timerFrequency;
+	timeForNextFall = (double)currentFrameTime + timerFrequency;
 
 	unsigned int internalGravity[InternalGravity::numOfLevels][InternalGravity::numOfTypesPlusLevel] = {
 		{0,		1024},
@@ -279,7 +279,7 @@ void GameClass::gameLoop()
 	double gameLoopdt = (double)currentFrameTime - previousFrameTime;	//loss of data, but I don't know how to fix
 	gameLoopdt = gameLoopdt / timerFrequency;
 	/*//start of debugcode
-	std::string dtstring = std::to_string(gameLoopdt) + '\n';
+	std::string dtstring = std::to_string(gameLoopdt) + '	' + std::to_string(1/gameLoopdt) + '\n';
 	OutputDebugString(dtstring.c_str());
 	//end of debi*/
 	const float minFrametime = timerFrequency / maxfps;
@@ -290,6 +290,7 @@ void GameClass::gameLoop()
 		processInput();		//note that process input is also used for updating the game
 		updateGame();
 		currentTime = SDL_GetPerformanceCounter();
+		if (!isFramerateLimited) break;
 	}
 	gameDraw();
 }
@@ -393,16 +394,18 @@ void GameClass::updateGame()
 			}
 		}							//end of gettting random tetriminos
 	}
-	while (timeForNextFall <= currentTime && !FallingTetrimno.returnHasLanded()) {		//when to fall
-		FallingTetrimno.fall(&grid);
-		if (FallingTetrimno.returnHasLanded())
-			timeToLock = msTime + Delays_Data.getRoundedDataInUnitOfTimeFromLevel(1000, level, Delays::Lock);
-		updateTimeForNextFall();
+	while (timeForNextFall <= currentTime) {		//when to fall
+		timeForNextFall += InternalGravity_Data.getConvertedDataFromLevel(timerFrequency, level);
+		if (!FallingTetrimno.returnHasLanded()) {
+			FallingTetrimno.fall(&grid);
+			if (FallingTetrimno.returnHasLanded())
+				timeToLock = msTime + Delays_Data.getRoundedAndConvertedDataFromLevel(1000, level, Delays::Lock);
+		}
 	}
 	while (timeForNextMove <= msTime && potentialVelocity[0] != 0) {
 		FallingTetrimno.move(&grid, potentialVelocity[0]);
 		if (!DAS) {
-			timeForNextMove += Delays_Data.getRoundedDataInUnitOfTimeFromLevel(1000, level, Delays::DAS);
+			timeForNextMove += Delays_Data.getRoundedAndConvertedDataFromLevel(1000, level, Delays::DAS);
 			++DAS;
 		} else
 			timeForNextMove += 16;
@@ -418,8 +421,6 @@ void GameClass::updateGame()
 			}
 			canHoldTetromino = true;
 		}
-		if (timeForNextFall <= currentTime)
-			updateTimeForNextFall();
 	}
 	if (100 < level) canShowGhostPiece = false;
 	HardDropHint.update(&grid, FallingTetrimno);
@@ -446,12 +447,7 @@ void GameClass::spawnNewFallingTetromino()
 	if (FallingTetrimno.detectCollision(&grid, spawning)) {
 		*gameState = lost;
 	}
-	timeForNextFall = currentFrameTime + InternalGravity_Data.getRoundedDataInUnitOfTimeFromLevel(timerFrequency, level);	//this is used to synchronize the timings
-}
-
-void GameClass::updateTimeForNextFall()
-{
-	timeForNextFall += InternalGravity_Data.getRoundedDataInUnitOfTimeFromLevel(timerFrequency, level);
+	timeForNextFall = (double)currentFrameTime + InternalGravity_Data.getConvertedDataFromLevel(timerFrequency, level);	//this is used to synchronize the timings
 }
 
 /* this was for debugging a bug where losing made the game literally unplayable

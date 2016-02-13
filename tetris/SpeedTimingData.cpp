@@ -1,31 +1,21 @@
 #include "SpeedTimingData.h"
 
-double SpeedTimingData::getDataInUnitOfTimeFromLevel(Uint64 frequency, int level)
-{
-	return 0;
-}
 
 int SpeedTimingData::getIndexFromLevel(int level, unsigned int *data, const size_t numOfLevels, const size_t numOfTypesPlusLevel)
 {
 	if (level < 0) return 0;
-	int i = 0;
+	unsigned int Ulevel = level;	//fixes compiler warning C4018
+	unsigned int i = 0;
 	while (i < numOfLevels) {
-		if (*data <= level) {
-			unsigned int *temp = data + numOfTypesPlusLevel;
-			if (level < *temp) return i;
-		}
+		if (*data <= Ulevel && Ulevel < *(data + numOfTypesPlusLevel))
+			return i;
 		data += numOfTypesPlusLevel;
 		i++;
 	}
 	return i - 1;	//this is only for the last level
 }
 
-Uint64 SpeedTimingData::getRoundedDataInUnitOfTimeFromLevel(Uint64 frequency, int level)
-{
-	return roundDoubleIntoUInt(getDataInUnitOfTimeFromLevel(frequency, level));
-}
-
-Uint64 roundDoubleIntoUInt(double value)
+Uint32 roundDoubleIntoUInt(double value)
 {
 	int tenthsValue = ((Uint64)(value * 10) % 10);
 	if (tenthsValue < 5) return (Uint64)value;
@@ -38,27 +28,26 @@ Uint64 roundDoubleIntoUInt(double value)
 	}
 }
 
-int InternalGravity::getDataFromLevel(int level)
-{
+Uint32 InternalGravity::getRawDataFromLevel(int level) {
 	return (*data)[getIndexFromLevel(level, **data, numOfLevels, numOfTypesPlusLevel)][1];
 }
-
-double InternalGravity::getDataInUnitOfTimeFromLevel(Uint64 frequency, int level)
-{
-	return (1.0 / ((double)getDataFromLevel(level) / (double)NUM_OF_GSLICES_IN_ONE_G)) * ((double)frequency / 60.0);
+double InternalGravity::getConvertedDataFromLevel(Uint64 frequency, int level) {
+	return (1.0 / ((double)getRawDataFromLevel(level) / (double)NUM_OF_GSLICES_IN_ONE_G)) * ((double)frequency / 60.0);
 }
 
-int Delays::getDataFromLevel(int level, Type type)
+Uint32 InternalGravity::getRoundedAndConvertedDataFromLevel(Uint64 frequency, int level)
 {
+	return roundDoubleIntoUInt(getConvertedDataFromLevel(frequency, level));
+}
+
+int Delays::getRawDataFromLevel(int level, Type type) {
 	return (*data)[getIndexFromLevel(level, **data, numOfLevels, numOfTypesPlusLevel)][type];
+};
+double Delays::getConvertedDataFromLevel(Uint64 frequency, int level, Type type) {
+	return (double)getRawDataFromLevel(level, type) * ((double)frequency / 60.0);
 }
 
-double Delays::getDataInUnitOfTimeFromLevel(Uint64 frequency, int level, Type type)
+Uint32 Delays::getRoundedAndConvertedDataFromLevel(Uint64 frequency, int level, Type type)
 {
-	return (double)getDataFromLevel(level, type) * ((double)frequency / 60.0);
-}
-
-int Delays::getRoundedDataInUnitOfTimeFromLevel(Uint64 frequency, int level, Type type)
-{
-	return (int)roundDoubleIntoUInt(getDataInUnitOfTimeFromLevel(frequency, level, type));
+	return roundDoubleIntoUInt(getConvertedDataFromLevel(frequency, level, type));
 }

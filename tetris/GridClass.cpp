@@ -15,6 +15,7 @@ GridClass::~GridClass()
 void GridClass::draw(SDL_Renderer* renderer)
 {
 	int c = 'NaC';
+	Block b;
 	for (int fh = 0; fh < h; fh++) {
 		for (int fw = 0; fw < w; fw++) {
 			if (c != landed[fh][fw]) {
@@ -22,7 +23,6 @@ void GridClass::draw(SDL_Renderer* renderer)
 				setDrawColor(renderer, c);
 			}
 			//if (c != 0) {					//make it so that we don't have to draw every emty space
-				Block b;
 				b.draw(renderer, fw * 20, fh * 20);
 			//}
 		}

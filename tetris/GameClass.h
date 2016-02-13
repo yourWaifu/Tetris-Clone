@@ -38,13 +38,13 @@ private:
 	//gameplay functions
 	void hold();
 	void spawnNewFallingTetromino();
-	void updateTimeForNextFall();
 	//void lose();		//only used for debuging for now
 	Uint64 previousFrameTime;
 	Uint64 currentFrameTime;
 	Uint64 currentTime;
 	Uint64 timerFrequency;
 	Uint32 msTime;
+	bool isFramerateLimited = false;
 	const float maxfps = 480;
 	state* gameState;
 	//SDL
@@ -55,7 +55,7 @@ private:
 	//gameplay variables
 	InternalGravity InternalGravity_Data;
 	Delays Delays_Data;
-	Uint64 timeForNextFall;						//tells us when the block is going to fall in ms
+	double timeForNextFall;						//tells us when the block is going to fall in ms
 	Uint32 timeForNextMove;
 	Uint8 DAS;
 	Uint32 timeToLock;
