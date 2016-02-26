@@ -29,7 +29,6 @@ in the future I plan to make it so that you can change the controls
       - [ ] *TGM Rotation or SRS
       - [ ] *soft drop speed 20 to 60 (this will be a multiplier)
  - [ ] quit
-- [ ] 3ds port
 - [ ] add score
   - [ ] add combo multiper
   - [ ] add score level multiplier
