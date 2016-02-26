@@ -8,3 +8,6 @@ struct SceenResolution
 };
 
 extern SceenResolution gameResolution;
+
+void updateLeftSideX();
+extern int leftSideX;

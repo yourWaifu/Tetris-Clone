@@ -250,6 +250,7 @@ void GameClass::startGame()
 	level = -3;
 	bag[0] = 6; bag[1] = 4; bag[2] = 6; bag[3] = 4; 
 	grid.clear();
+	updateLeftSideX();
 	*gameState = in_game;
 	holdingTetrominoIndex = 'n';
 	canHoldTetromino = true;

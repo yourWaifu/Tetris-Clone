@@ -8,3 +8,9 @@ void SceenResolution::change(int _w, int _h) {
 	resolutionToOldStandardRatios[0] = w / 480.0f;
 	resolutionToOldStandardRatios[1] = h / 480.0f;
 }
+
+int leftSideX;
+void updateLeftSideX()
+{
+	leftSideX = (gameResolution.w - (int)(302.0 * gameResolution.resolutionToOldStandardRatios[1])) / 2;
+}

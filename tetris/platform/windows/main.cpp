@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
 	TTF_Init();
 	
 	// Create an application window with the following settings
-	gameResolution.change(400, 240);
+	gameResolution.change(400, 480);
 	SDL_Rect windowSize;
 	windowSize.x = 0;
 	windowSize.y = 0;
