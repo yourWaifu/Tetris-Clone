@@ -8,6 +8,8 @@ this is just a personal project to help me get more experience with programming.
 * rotation is j or k
 * hold is u
 
+* if you are on the 3ds, press start to exit
+
 in the future I plan to make it so that you can change the controls
 
 #Plans for the future
