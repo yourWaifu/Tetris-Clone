@@ -321,7 +321,7 @@ void GameClass::gameDraw()
 	std::string InGameUIText = InGameUITextStream.str();
 	const char *InGameUITextChar = InGameUIText.c_str();
 #ifdef SDL
-	InGameUI.draw(renderer, InGameUITextChar, (int)(0.4166f * gameResolution.h), (int)(0.833f * gameResolution.h));
+	InGameUI.draw(renderer, InGameUITextChar, leftSideX + (int)(0.4166f * gameResolution.h), (int)(0.833f * gameResolution.h));
 #else
 	//printText(InGameUITextChar);
 #endif
