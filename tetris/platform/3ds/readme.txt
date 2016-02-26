@@ -36,3 +36,6 @@ The reason was that it would be too much work removing all the SDL_, which there
 plus it would let me use alot more of sdl on windows.
 
 yes, I know I used alot of copy and paste from the sdl source code
+alot of the code was copyed from sdl, and not made by me!!
+but alot of it was made by me
+any code from sdl I will not claim to be mine
