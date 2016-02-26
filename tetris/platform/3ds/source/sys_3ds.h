@@ -5,6 +5,8 @@
 #include <stdlib.h>
 
 #define SYSH true
+#define USE_RAND
+#define CONSOLE_INTERFACE
 
 /**
 *  \name Basic data types

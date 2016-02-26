@@ -376,7 +376,7 @@ void GameClass::updateGame()
 		// randomness in tgm is crazy, This is the outdated one, becuase I don't understand how the newer one works
 		if (randomTetrominoesIndex[l] == 'n') {
 			level++;
-#ifdef THREEDS
+#ifdef CONSOLE_INTERFACE
 			std::stringstream InGameUITextStream;
 			InGameUITextStream << "Level " << level;
 			std::string InGameUIText = InGameUITextStream.str();
@@ -386,7 +386,7 @@ void GameClass::updateGame()
 			std::uniform_int_distribution<int> int_dist6(0, 6);
 			for (int i = 0; i < 6; i++) {
 				randomTetrominoesIndex[l] = int_dist6(mt);		//gen random number from 0 to 6
-#ifdef THREEDS
+#ifdef USE_RAND
 				randomTetrominoesIndex[l] = rand() % 7;
 #endif // THREEDS
 				bool isInBag = false;
