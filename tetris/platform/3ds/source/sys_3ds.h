@@ -59,7 +59,6 @@ typedef uint64_t Uint64;
 #define ALLHFILES
 #include "video.h"
 #include "render.h"
-#include "events.h"
 #include "time.h"
 #include "input.h"
 #endif // !ALLHFILES

@@ -44,9 +44,6 @@
     <ClInclude Include="include\sys.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\events.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\input.h">
       <Filter>Header Files</Filter>
     </ClInclude>

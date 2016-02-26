@@ -91,7 +91,6 @@ make</NMakeBuildCommandLine>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\sys.h" />
-    <ClInclude Include="source\events.h" />
     <ClInclude Include="source\event_types.h" />
     <ClInclude Include="source\input.h" />
     <ClInclude Include="source\rect.h" />
