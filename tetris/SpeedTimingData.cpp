@@ -18,13 +18,13 @@ int SpeedTimingData::getIndexFromLevel(int level, unsigned int *data, const size
 Uint32 roundDoubleIntoUInt(double value)
 {
 	int tenthsValue = ((Uint64)(value * 10) % 10);
-	if (tenthsValue < 5) return (Uint64)value;
-	else if (5 < tenthsValue) return (Uint64)value + 1;
+	if (tenthsValue < 5) return (Uint32)value;
+	else if (5 < tenthsValue) return (Uint32)value + 1;
 	else {
 		if ((Uint64)value % 2 == 0)
-			return (Uint64)value;
+			return (Uint32)value;
 		else
-			return (Uint64)value + 1;
+			return (Uint32)value + 1;
 	}
 }
 

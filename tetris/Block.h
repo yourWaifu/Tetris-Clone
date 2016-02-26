@@ -1,5 +1,6 @@
 #pragma once
-#include <SDL/SDL.h>
+#include <sys.h>
+#include "common.h"
 /*
 different numbers mean different color
 0 = n/a empty space

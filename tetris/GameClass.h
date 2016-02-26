@@ -1,8 +1,12 @@
 #pragma once
 //#include <iostream>
-#include <SDL\SDL.h>
+#include <sys.h>
+#ifdef SDL
+#include "platform/windows/TextComponent.h"
+#endif
 #include <array>
-//#include <string>
+#include <sstream>
+#include <string>
 //#include <windows.h>	//this is for debugging only. I think
 /*here is the debug code I like to use
 std::string dbstring = std::to_string(number) + '\n';
@@ -11,8 +15,8 @@ OutputDebugString(dbstring.c_str());
 #include <random>
 #include <chrono>
 #include "SpeedTimingData.h"
-#include "TextComponent.h"
 #include "Tetromino.h"
+#include "common.h"
 
 const SDL_Color white = { 255, 255, 255 };
 
@@ -26,7 +30,7 @@ enum state {
 class GameClass
 {
 public:
-	GameClass(SDL_Rect *Size, SDL_Window *win, SDL_Renderer *ren, state* stateOfTheGame);
+	GameClass(SDL_Rect *Size, SDL_Renderer *ren, state* stateOfTheGame);
 	~GameClass();
 
 private:
@@ -49,9 +53,8 @@ private:
 	state* gameState;
 	//SDL
 	SDL_Rect *windowSize;
-	SDL_Window *window;
 	SDL_Renderer *renderer;
-	SDL_Event event; //I have a feeling that this shouldn't be here
+	SDL_Event _event; //I have a feeling that this shouldn't be here
 	//gameplay variables
 	InternalGravity InternalGravity_Data;
 	Delays Delays_Data;
@@ -86,6 +89,9 @@ private:
 	SDL_Keycode rotateCounterClockwise = SDLK_j;
 	SDL_Keycode holdTetromino = SDLK_u;
 	SDL_Keycode hardDrop = SDLK_w;
+	SDL_Keycode hardDrop2 = SDLK_UP;
+#ifdef SDL
 	//UI
 	TextComponent InGameUI;
+#endif
 };

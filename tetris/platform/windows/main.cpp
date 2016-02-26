@@ -1,6 +1,6 @@
-#include "GameClass.h"
+#include "../../GameClass.h"
 
-void startPlaying(SDL_Rect *Size, SDL_Window *win, SDL_Renderer *ren, state* gameState);
+void startPlaying(SDL_Rect *Size, SDL_Renderer *ren, state* gameState);
 
 int main(int argc, char **argv) {
 
@@ -8,11 +8,12 @@ int main(int argc, char **argv) {
 	TTF_Init();
 	
 	// Create an application window with the following settings
+	gameResolution.change(400, 240);
 	SDL_Rect windowSize;
 	windowSize.x = 0;
 	windowSize.y = 0;
-	windowSize.w = 640;
-	windowSize.h = 480;
+	windowSize.w = gameResolution.w;
+	windowSize.h = gameResolution.h;
 
 	SDL_Window *window = SDL_CreateWindow(
 		"Tetris Clone made by a bad programmer",                  // window title
@@ -44,7 +45,7 @@ int main(int argc, char **argv) {
 	state gameState = starting;
 	while (gameState == lost || gameState == NULL) {
 		gameState = starting;
-		startPlaying(&windowSize, window, renderer, &gameState);
+		startPlaying(&windowSize, renderer, &gameState);
 	}
 
 	SDL_DestroyWindow(window);
@@ -53,8 +54,8 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
-void startPlaying(SDL_Rect *Size, SDL_Window *win, SDL_Renderer *ren, state* stateOfTheGame) {
-	std::auto_ptr<GameClass> Tetris(new GameClass(Size, win, ren, stateOfTheGame));
+void startPlaying(SDL_Rect *Size, SDL_Renderer *ren, state* stateOfTheGame) {
+	std::auto_ptr<GameClass> Tetris(new GameClass(Size, ren, stateOfTheGame));
 	//SDL_Delay(1000);
 }
 

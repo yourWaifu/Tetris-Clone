@@ -47,14 +47,14 @@ SDL_Color getDrawColor(int c) {
 
 Block::Block()
 {
-	BlockRect.w = (int)(blockSize / blockBorder);
-	BlockRect.h = (int)(blockSize / blockBorder);
-	BorderPxSize = blockSize - BlockRect.w;
+	BlockRect.w = (int)((blockSize / blockBorder) * gameResolution.resolutionToOldStandardRatios[1]);
+	BlockRect.h = BlockRect.w;
+	BorderPxSize = (int)((gameResolution.resolutionToOldStandardRatios[1] * blockSize) - BlockRect.w);
 }
 
 void Block::updateCoordinates(int x, int y) {
-	BlockRect.x = x + BorderPxSize;
-	BlockRect.y = y - 40 + BorderPxSize; //BlockRect.y = y * 20 * 4  this is to not show the top five blocks so that the blocks spawn at the top
+	BlockRect.x = (int)((x * 20) * gameResolution.resolutionToOldStandardRatios[1] + BorderPxSize);
+	BlockRect.y = (int)(((y * 20) - 40) * gameResolution.resolutionToOldStandardRatios[1] + BorderPxSize); //BlockRect.y = y * 20 * 4  this is to not show the top five blocks so that the blocks spawn at the top
 }
 
 void Block::draw(SDL_Renderer* renderer, int x, int y, bool SrippledAlpha)

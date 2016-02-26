@@ -1,7 +1,5 @@
 #include "GridClass.h"
 
-
-
 GridClass::GridClass()
 {
 }
@@ -23,7 +21,7 @@ void GridClass::draw(SDL_Renderer* renderer)
 				setDrawColor(renderer, c);
 			}
 			//if (c != 0) {					//make it so that we don't have to draw every emty space
-				b.draw(renderer, fw * 20, fh * 20);
+				b.draw(renderer, fw, fh);
 			//}
 		}
 	}

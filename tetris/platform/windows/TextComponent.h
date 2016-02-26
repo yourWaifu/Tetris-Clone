@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
-#include <SDL\SDL.h>
+#include <sys.h>
+#ifdef SDL
 #include <SDL_ttf\SDL_ttf.h>
+#endif // SYS
 //#include <windows.h>
 
 class TextComponent

@@ -52,7 +52,7 @@ void Tetromino::drawShape(SDL_Renderer* renderer, bool SrippledAlpha)
 		for (int fw = 0; fw < shapeSize; fw++) {
 			if ((*shape)[rotation][fh][fw] > 0) {
 				Block b;
-				b.draw(renderer, (x + fw) * 20, (y + fh) * 20, SrippledAlpha);
+				b.draw(renderer, x + fw, y + fh, SrippledAlpha);
 			}
 		}
 	}

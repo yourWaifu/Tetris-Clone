@@ -1,5 +1,5 @@
 #pragma once
-#include <SDL\SDL.h>
+#include <sys.h>
 
 #define NUM_OF_GSLICES_IN_ONE_G 65536
 

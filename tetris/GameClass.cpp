@@ -1,9 +1,8 @@
 #include "GameClass.h"
 
-GameClass::GameClass(SDL_Rect *Size, SDL_Window *win, SDL_Renderer *ren, state* stateOfTheGame)
+GameClass::GameClass(SDL_Rect *Size, SDL_Renderer *ren, state* stateOfTheGame)
 {
 	windowSize = Size;
-	window = win;
 	renderer = ren;
 	gameState = stateOfTheGame;
 	//run start game function. what do you think it does?
@@ -21,7 +20,7 @@ void GameClass::startGame()
 	//first, we define all Tetrominoes aka hardcode all Tetrominoes and it's wall kick data and Speed Timings
 	/*
 	different numbers mean different color
-	0 = n/a empty space
+	0 = n empty space
 	1 = cyan
 	2 = blue
 	3 = orange
@@ -252,16 +251,18 @@ void GameClass::startGame()
 	bag[0] = 6; bag[1] = 4; bag[2] = 6; bag[3] = 4; 
 	grid.clear();
 	*gameState = in_game;
-	holdingTetrominoIndex = 'n/a';
+	holdingTetrominoIndex = 'n';
 	canHoldTetromino = true;
-	for (int i = 0; i < sizeOfRandomTetrominoesIndex; i++) {		//makes everything in the randomTetrominoesIndex array = n/a
-		randomTetrominoesIndex[i] = 'n/a';
+	for (int i = 0; i < sizeOfRandomTetrominoesIndex; i++) {		//makes everything in the randomTetrominoesIndex array = n
+		randomTetrominoesIndex[i] = 'n';
 	}
 	canShowGhostPiece = true;
 
+#ifdef SDL
 	//***UI***
-	InGameUI.changeFont("fonts/calibri.ttf", 24);
+	InGameUI.changeFont("fonts/calibri.ttf", (int)(0.05f * gameResolution.h));
 	InGameUI.changeColor(255, 255, 255);
+#endif
 
 	//***loop time***
 	while (*gameState != lost && *gameState != quit) {
@@ -305,7 +306,7 @@ void GameClass::gameDraw()
 	//draw tetrimino
 	if (canShowGhostPiece) HardDropHint.draw(FallingTetrimno, renderer);
 	FallingTetrimno.draw(renderer);
-	HoldingTetrimno.draw(renderer);
+	if (holdingTetrominoIndex != 'n') HoldingTetrimno.draw(renderer);
 	//draw next Tetrimno
 	for (int i = 0; i < sizeOfRandomTetrominoesIndex - 1; i++) {
 		NextTetrimno = *allTetrominoes[randomTetrominoesIndex[i+1]];
@@ -314,18 +315,24 @@ void GameClass::gameDraw()
 		NextTetrimno.draw(renderer);
 	}
 	//render level text. you should put this into it's own function
-	std::string InGameUIText = "Level " + std::to_string(level);
+	std::stringstream InGameUITextStream;
+	InGameUITextStream << "Level " << level;
+	std::string InGameUIText = InGameUITextStream.str();
 	const char *InGameUITextChar = InGameUIText.c_str();
-	InGameUI.draw(renderer, InGameUITextChar, 200, 400);
+#ifdef SDL
+	InGameUI.draw(renderer, InGameUITextChar, (int)(0.4166f * gameResolution.h), (int)(0.833f * gameResolution.h));
+#else
+	//printText(InGameUITextChar);
+#endif
 	//??????I think this is where it renders the stuff
 	SDL_RenderPresent(renderer);
 }
 
 void GameClass::processInput()
 {
-	while (SDL_PollEvent(&event)) {
+	while (SDL_PollEvent(&_event)) {
 		const Uint8* states = SDL_GetKeyboardState(NULL);
-		switch (event.type) {
+		switch (_event.type) {
 			case SDL_QUIT:
 				*gameState = quit;
 				break;
@@ -337,36 +344,51 @@ void GameClass::processInput()
 					DAS = 0;
 				}
 				if (states[SDL_GetScancodeFromKey(holdTetromino)]) hold();
-				if (event.key.keysym.sym == hardDrop) FallingTetrimno.hardDrop(&grid, &HardDropHint);
-				if (event.key.keysym.sym == rotateClockwise) FallingTetrimno.rotate(&grid, clockwise);
-				if (event.key.keysym.sym == rotateCounterClockwise) FallingTetrimno.rotate(&grid, counterClockwise);
+				if (_event.key.keysym.sym == hardDrop || _event.key.keysym.sym == hardDrop2) FallingTetrimno.hardDrop(&grid, &HardDropHint);
+				if (_event.key.keysym.sym == rotateClockwise) FallingTetrimno.rotate(&grid, clockwise);
+				if (_event.key.keysym.sym == rotateCounterClockwise) FallingTetrimno.rotate(&grid, counterClockwise);
 				break;
 			case SDL_KEYUP:
 				if ((!states[SDL_GetScancodeFromKey(moveRight)] || !states[SDL_GetScancodeFromKey(moveRight2)]) || (!states[SDL_GetScancodeFromKey(moveLeft)] || !states[SDL_GetScancodeFromKey(moveLeft2)])) {
 					potentialVelocity[0] = (states[SDL_GetScancodeFromKey(moveRight)] || states[SDL_GetScancodeFromKey(moveRight2)]) - (states[SDL_GetScancodeFromKey(moveLeft)] || states[SDL_GetScancodeFromKey(moveLeft2)]);
 					timeForNextMove = msTime;
+					DAS = 0;
 				}
 				break;
 		}
+#ifndef SDL
+		if (sys_input_quit(_event.type, _event.key.keysym.sym)) *gameState = quit;
+#endif // !SDL
+
 	}
 }
 
 void GameClass::updateGame()
 {
-	if (FallingTetrimno.returnIsLocked() || (randomTetrominoesIndex[0] == 'n/a' && randomTetrominoesIndex[1] != 'n/a')) {
+	if (FallingTetrimno.returnIsLocked() || (randomTetrominoesIndex[0] == 'n' && randomTetrominoesIndex[1] != 'n')) {
 		for (int i = 0; i < sizeOfRandomTetrominoesIndex; i++) {
 			randomTetrominoesIndex[i] = randomTetrominoesIndex[i + 1];
 		}
-		randomTetrominoesIndex[3] = 'n/a';
+		randomTetrominoesIndex[3] = 'n';
 		spawnNewFallingTetromino();
 	}
 	for (int l = 0; l < sizeOfRandomTetrominoesIndex; l++) {
 		// randomness in tgm is crazy, This is the outdated one, becuase I don't understand how the newer one works
-		if (randomTetrominoesIndex[l] == 'n/a') {
+		if (randomTetrominoesIndex[l] == 'n') {
 			level++;
+#ifdef THREEDS
+			std::stringstream InGameUITextStream;
+			InGameUITextStream << "Level " << level;
+			std::string InGameUIText = InGameUITextStream.str();
+			const char *InGameUITextChar = InGameUIText.c_str();
+			printText(InGameUITextChar);
+#endif // THREEDS
 			std::uniform_int_distribution<int> int_dist6(0, 6);
 			for (int i = 0; i < 6; i++) {
 				randomTetrominoesIndex[l] = int_dist6(mt);		//gen random number from 0 to 6
+#ifdef THREEDS
+				randomTetrominoesIndex[l] = rand() % 7;
+#endif // THREEDS
 				bool isInBag = false;
 				for (int j = 0; j < 4; j++) {				//checks if it's in the bag
 					if (bag[j] == randomTetrominoesIndex[l]) {
@@ -429,14 +451,14 @@ void GameClass::updateGame()
 void GameClass::hold()
 {
 	if (canHoldTetromino == false) return;
-	if (randomTetrominoesIndex[0] == 'n/a') return;
+	if (randomTetrominoesIndex[0] == 'n') return;
 	int t = randomTetrominoesIndex[0];
 	randomTetrominoesIndex[0] = holdingTetrominoIndex;
 	holdingTetrominoIndex = t;
 	HoldingTetrimno = *allTetrominoes[holdingTetrominoIndex];
 	HoldingTetrimno.x = 0;
 	HoldingTetrimno.y = 1;
-	if (randomTetrominoesIndex[0] != 'n/a')
+	if (randomTetrominoesIndex[0] != 'n')
 		FallingTetrimno = *allTetrominoes[randomTetrominoesIndex[0]];
 	canHoldTetromino = false;
 }
@@ -464,7 +486,7 @@ void GameClass::lose()
 	bag[0] = 6; bag[1] = 4; bag[0] = 6; bag[0] = 4;
 	grid.clear();
 	*gameState = in_game;
-	randomTetrominoesIndex = 'n/a';
+	randomTetrominoesIndex = 'n';
 	timeForNextFall = msTime + 1000;
 }
 */

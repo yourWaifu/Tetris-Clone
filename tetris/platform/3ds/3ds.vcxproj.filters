@@ -15,60 +15,63 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GameClass.cpp">
+    <Text Include="readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Block.cpp">
+    <ClCompile Include="source\render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GridClass.cpp">
+    <ClCompile Include="source\video.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InputComponent.cpp">
+    <ClCompile Include="source\time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tetromino.cpp">
+    <ClCompile Include="source\events.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GhostTetromino.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SpeedTimingData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="platform\windows\TextComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="platform\windows\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="common.cpp">
+    <ClCompile Include="source\input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameClass.h">
+    <ClInclude Include="include\sys.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Block.h">
+    <ClInclude Include="source\events.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GridClass.h">
+    <ClInclude Include="source\input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="InputComponent.h">
+    <ClInclude Include="source\rect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Tetromino.h">
+    <ClInclude Include="source\render.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SpeedTimingData.h">
+    <ClInclude Include="source\SDL_keycode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="platform\windows\TextComponent.h">
+    <ClInclude Include="source\SDL_scancode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="common.h">
+    <ClInclude Include="source\sys_3ds.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\time.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\video.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\event_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

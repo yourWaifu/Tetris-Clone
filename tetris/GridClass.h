@@ -20,6 +20,6 @@ private:
 	TO DO, make this part of the constructor
 	*/
 	//TO DO later make a function for this
-	unsigned __int8 landed[h][w];
+	Uint8 landed[h][w];
 };
 
