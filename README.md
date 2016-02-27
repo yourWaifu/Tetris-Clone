@@ -21,6 +21,7 @@ in the future I plan to make it so that you can change the controls
     - [ ] video options
       - [ ] screen resolution options
       - [ ] turn stipple alpha on ghost piece on or off
+      - [ ] screen rotation(thanks to Shadik09 for the idea)
     - [ ] game options
       - [ ] ghost piece shade amount
       - [ ] ghost piece stippled alpha amount
