@@ -53,7 +53,7 @@ Block::Block()
 }
 
 void Block::updateCoordinates(int x, int y) {
-	BlockRect.x = leftSideX + (int)((x * 20) * gameResolution.resolutionToOldStandardRatios[1] + BorderPxSize);
+	BlockRect.x = gameResolution.leftSideX + (int)((x * 20) * gameResolution.resolutionToOldStandardRatios[1] + BorderPxSize);
 	BlockRect.y = (int)(((y * 20) - 40) * gameResolution.resolutionToOldStandardRatios[1] + BorderPxSize); //BlockRect.y = y * 20 * 4  this is to not show the top five blocks so that the blocks spawn at the top
 }
 

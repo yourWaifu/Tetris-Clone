@@ -250,7 +250,6 @@ void GameClass::startGame()
 	level = -3;
 	bag[0] = 6; bag[1] = 4; bag[2] = 6; bag[3] = 4; 
 	grid.clear();
-	updateLeftSideX();
 	*gameState = in_game;
 	holdingTetrominoIndex = 'n';
 	canHoldTetromino = true;
@@ -321,7 +320,7 @@ void GameClass::gameDraw()
 	std::string InGameUIText = InGameUITextStream.str();
 	const char *InGameUITextChar = InGameUIText.c_str();
 #ifdef SDL
-	InGameUI.draw(renderer, InGameUITextChar, leftSideX + (int)(0.4166f * gameResolution.h), (int)(0.833f * gameResolution.h));
+	InGameUI.draw(renderer, InGameUITextChar, gameResolution.leftSideX + (int)(0.4166f * gameResolution.h), (int)(0.833f * gameResolution.h));
 #else
 	//printText(InGameUITextChar);
 #endif
