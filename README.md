@@ -31,9 +31,5 @@ in the future I plan to make it so that you can change the controls
       - [ ] *TGM Rotation or SRS
       - [ ] *soft drop speed 20 to 60 (this will be a multiplier)
  - [ ] quit
-- [ ] add score
-  - [ ] add combo multiper
-  - [ ] add score level multiplier
-  - [ ] save highscore
 - [ ] save after every hold, and new tetris piece that is generated (this is help people not restart unlesss thay lose)
 - [ ] add replay system
