@@ -61,4 +61,5 @@ typedef uint64_t Uint64;
 #include "render.h"
 #include "time.h"
 #include "input.h"
+#include "text.h"
 #endif // !ALLHFILES

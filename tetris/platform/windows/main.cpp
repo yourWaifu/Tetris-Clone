@@ -1,6 +1,6 @@
 #include "../../GameClass.h"
 
-void startPlaying(SDL_Rect *Size, SDL_Renderer *ren, state* gameState);
+void startPlaying(SDL_Rect *Size, SDL_Renderer *ren, SDL_Window *window, state* stateOfTheGame);
 
 int main(int argc, char **argv) {
 
@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 	state gameState = starting;
 	while (gameState == lost || gameState == NULL) {
 		gameState = starting;
-		startPlaying(&windowSize, renderer, &gameState);
+		startPlaying(&windowSize, renderer, window, &gameState);
 	}
 
 	SDL_DestroyWindow(window);
@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
-void startPlaying(SDL_Rect *Size, SDL_Renderer *ren, state* stateOfTheGame) {
+void startPlaying(SDL_Rect *Size, SDL_Renderer *ren, SDL_Window *window, state* stateOfTheGame) {
 	std::auto_ptr<GameClass> Tetris(new GameClass(Size, ren, stateOfTheGame));
 	//SDL_Delay(1000);
 }

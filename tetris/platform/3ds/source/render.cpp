@@ -63,7 +63,7 @@ void SDL_RenderDrawPoints(SDL_Renderer * renderer, const SDL_Point * points, int
 	for (int i = 0; i < count; i++) {
 		if (0 <= points[i].x || points[i].x <= SCREEN_WIDTH || 0 <= points[i].y || SCREEN_HIGHET <= points[i].y) {
 			for (int c = 0; c < NUM_OF_BYTES; c++)
-				renderer->buffer[(((points[i].x * SCREEN_HIGHET) + (SCREEN_HIGHET - points[i].y)) * 3) + c] = renderer->color[c];
+				renderer->buffer[(((points[i].x * SCREEN_HIGHET) + (SCREEN_HIGHET - points[i].y)) * NUM_OF_BYTES) + c] = renderer->color[c];
 		}
 	}
 }

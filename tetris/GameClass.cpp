@@ -5,6 +5,7 @@ GameClass::GameClass(SDL_Rect *Size, SDL_Renderer *ren, state* stateOfTheGame)
 	windowSize = Size;
 	renderer = ren;
 	gameState = stateOfTheGame;
+//	window = win;
 	//run start game function. what do you think it does?
 	startGame();
 }
@@ -294,6 +295,7 @@ void GameClass::gameLoop()
 		if (!isFramerateLimited) break;
 	}
 	gameDraw();
+	SDL_RenderPresent(renderer);	//putting this outside the pause fixed some bugs
 }
 
 void GameClass::gameDraw()
@@ -325,7 +327,6 @@ void GameClass::gameDraw()
 	//printText(InGameUITextChar);
 #endif
 	//??????I think this is where it renders the stuff
-	SDL_RenderPresent(renderer);
 }
 
 void GameClass::processInput()
@@ -347,6 +348,7 @@ void GameClass::processInput()
 				if (_event.key.keysym.sym == hardDrop || _event.key.keysym.sym == hardDrop2) FallingTetrimno.hardDrop(&grid, &HardDropHint);
 				if (_event.key.keysym.sym == rotateClockwise) FallingTetrimno.rotate(&grid, clockwise);
 				if (_event.key.keysym.sym == rotateCounterClockwise) FallingTetrimno.rotate(&grid, counterClockwise);
+				if (_event.key.keysym.sym == SDLK_ESCAPE || _event.key.keysym.sym == SDLK_KP_ENTER) pause(states);
 				break;
 			case SDL_KEYUP:
 				if ((!states[SDL_GetScancodeFromKey(moveRight)] || !states[SDL_GetScancodeFromKey(moveRight2)]) || (!states[SDL_GetScancodeFromKey(moveLeft)] || !states[SDL_GetScancodeFromKey(moveLeft2)])) {
@@ -356,9 +358,9 @@ void GameClass::processInput()
 				}
 				break;
 		}
-#ifndef SDL
-		if (sys_input_quit(_event.type, _event.key.keysym.sym)) *gameState = quit;
-#endif // !SDL
+//#ifndef SDL
+//		if (sys_input_quit(_event.type, _event.key.keysym.sym)) *gameState = quit;
+//#endif // !SDL
 
 	}
 }
@@ -470,6 +472,96 @@ void GameClass::spawnNewFallingTetromino()
 		*gameState = lost;
 	}
 	timeForNextFall = (double)currentFrameTime + InternalGravity_Data.getConvertedDataFromLevel(timerFrequency, level);	//this is used to synchronize the timings
+}
+
+void randomThing(void* var, std::string* val) {
+	*val = *val == "false" ? "true" : "false";
+}
+
+void quitToWindows(void* var, std::string* val) {
+	*(state*)var = quit;
+}
+
+void toggleGhostPiece(void* var, std::string* val) {
+	*(bool*)var = *(bool*)var ? false : true;
+	*val = *(bool*)var ? "on" : "off";
+}
+
+void GameClass::pause(const Uint8* states)		//TO-DO before the rendering the pause menu copy the framebuffer and use that as the background
+{
+	if (*gameState == in_game) *gameState = paused;
+	else if (*gameState == paused) *gameState = in_game;
+	if (*gameState != paused) return;
+
+	Uint64 oldTime = currentTime;	//keep track of time before we pause the game, so that timings don't go out of sync
+	Uint32 oldmsTime = msTime;
+
+	//to-do turn this into a function
+	MenuAction goCrazy("dsafasd", "adsgafdg", randomThing, nullptr, "false");
+	MenuAction showGhostPiece("Show ghost piece", "shows the piece at the bottom to show you where the piece will drop", toggleGhostPiece, &canShowGhostPiece, canShowGhostPiece ? "on" : "off");
+	std::vector<MenuObject*> ListOfOptions = { &goCrazy, &showGhostPiece };
+	NormalMenu Opinions("Options", "change the way the game behaves", &ListOfOptions);
+	MenuAction Quit("Quit to Windows", "", quitToWindows, gameState);
+	std::vector<MenuObject*> ListOfStuff = { &Opinions, &Quit };
+	NormalMenu PauseMenu("Paused", "", &ListOfStuff);
+	Path* pathToCurrent = makeNewPath(&PauseMenu);
+
+	InGameUI.draw(renderer, "The game is now paused,", gameResolution.leftSideX + (int)(0.1f * gameResolution.h), (int)(0.5f * gameResolution.h));
+	InGameUI.draw(renderer, "and waiting for an Event.", gameResolution.leftSideX + (int)(0.1f * gameResolution.h), (int)(0.55f * gameResolution.h));
+	SDL_RenderPresent(renderer);	//remove this later
+
+	bool canCloseMenu = false;
+	while (SDL_WaitEvent(&_event)) {	//pause starts here, loop and wait for input
+		switch (_event.type) {
+		case SDL_KEYDOWN:
+			if (states[SDL_GetScancodeFromKey(SDLK_ESCAPE)] && canCloseMenu) *gameState = in_game;
+			if (_event.key.keysym.sym == menuMoveUp) {
+				if (pathToCurrent->selectIndex == 0) pathToCurrent->selectIndex = pathToCurrent->getCurrentMenu()->getSize() - 1;
+				else --pathToCurrent->selectIndex;
+			}
+			if (_event.key.keysym.sym == menuMoveDown) {
+				if (pathToCurrent->selectIndex == pathToCurrent->getCurrentMenu()->getSize() -1 ) pathToCurrent->selectIndex = 0;
+				else ++pathToCurrent->selectIndex;
+			}
+			if (_event.key.keysym.sym == menuSelect) {
+				if (pathToCurrent->getCurrentMenu()->menuList->at(pathToCurrent->selectIndex)->isThisAMenu()){
+					pathToCurrent->location[pathToCurrent->numOfObjectsInLocationArray] = static_cast<NormalMenu*> (pathToCurrent->getCurrentMenu()->menuList->at(pathToCurrent->selectIndex));
+					++pathToCurrent->numOfObjectsInLocationArray;
+				} else {
+					MenuAction* selectedAction = static_cast<MenuAction*> (pathToCurrent->getCurrentMenu()->menuList->at(pathToCurrent->selectIndex));
+					if (selectedAction != NULL) {
+						selectedAction->doAction(selectedAction->getVariablePointer(), &selectedAction->value);
+					}
+				}
+			}
+			if (_event.key.keysym.sym == menuUpOneLevel ) {
+				if (pathToCurrent->numOfObjectsInLocationArray - 1) {
+					pathToCurrent->getCurrentMenu()->magic = false;
+					--pathToCurrent->numOfObjectsInLocationArray;
+				} else if (canCloseMenu) *gameState = in_game;
+			}
+			break;
+		case SDL_KEYUP:
+			if (!states[SDL_GetScancodeFromKey(SDLK_ESCAPE)] && !canCloseMenu) canCloseMenu = true;
+			break;
+		case SDL_QUIT:
+			*gameState = quit;
+			break;
+		}
+		if (*gameState != paused) break;	//pause ends here by stopping the loop
+		gameDraw();
+		pathToCurrent->getCurrentMenu()->draw(renderer, &pathToCurrent->selectIndex, &InGameUI);
+		SDL_RenderPresent(renderer);
+	}
+	delete pathToCurrent;
+
+	currentTime = SDL_GetPerformanceCounter();	//now that the timings are out of sync, the next few lines of code fixes that
+	msTime = SDL_GetTicks();
+	timeForNextFall += currentTime - oldTime;
+	timeForNextMove += msTime - oldmsTime;
+	timeToLock += msTime - oldmsTime;
+
+	InGameUI.draw(renderer, "unpaused", gameResolution.leftSideX + (int)(0.1f * gameResolution.h), (int)(0.55f * gameResolution.h));
 }
 
 /* this was for debugging a bug where losing made the game literally unplayable

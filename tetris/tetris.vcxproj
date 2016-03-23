@@ -131,6 +131,7 @@
     <ClCompile Include="GhostTetromino.cpp" />
     <ClCompile Include="GridClass.cpp" />
     <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="menus.cpp" />
     <ClCompile Include="platform\windows\main.cpp" />
     <ClCompile Include="common.cpp" />
     <ClCompile Include="SpeedTimingData.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="GameClass.h" />
     <ClInclude Include="GridClass.h" />
     <ClInclude Include="InputComponent.h" />
+    <ClInclude Include="menus.h" />
     <ClInclude Include="SpeedTimingData.h" />
     <ClInclude Include="Tetromino.h" />
     <ClInclude Include="platform\windows\TextComponent.h" />

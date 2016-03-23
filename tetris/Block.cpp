@@ -83,6 +83,6 @@ void Block::drawSrippledAlpha(SDL_Renderer* renderer, int x, int y)
 			++j;
 		}
 	}
-	SDL_RenderDrawPoints(renderer, points, j + 1);
+	SDL_RenderDrawPoints(renderer, points, j);
 	delete points;
 }

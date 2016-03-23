@@ -59,6 +59,16 @@ int SDL_PollEvent(SDL_Event * _event)
 	else return 0;
 }
 
+int SDL_WaitEvent(SDL_Event * event) {
+	int result;
+	result = SDL_PollEvent(event);
+	while (!result) {
+		hidWaitForEvent(HIDEVENT_PAD0, false);
+		result = SDL_PollEvent(event);
+	}
+	return result;
+}
+
 bool sys_input_quit(Uint32 type, SDL_Keycode key)
 {
 	if (type == SDL_KEYDOWN) {

@@ -17,6 +17,7 @@ OutputDebugString(dbstring.c_str());
 #include "SpeedTimingData.h"
 #include "Tetromino.h"
 #include "common.h"
+#include "menus.h"
 
 const SDL_Color white = { 255, 255, 255 };
 
@@ -24,7 +25,8 @@ enum state {
 	starting,
 	quit,
 	lost,
-	in_game
+	in_game,
+	paused
 };
 
 class GameClass
@@ -42,6 +44,7 @@ private:
 	//gameplay functions
 	void hold();
 	void spawnNewFallingTetromino();
+	void pause(const Uint8* states);
 	//void lose();		//only used for debuging for now
 	Uint64 previousFrameTime;
 	Uint64 currentFrameTime;
@@ -55,6 +58,7 @@ private:
 	SDL_Rect *windowSize;
 	SDL_Renderer *renderer;
 	SDL_Event _event; //I have a feeling that this shouldn't be here
+	//SDL_Window *window;
 	//gameplay variables
 	InternalGravity InternalGravity_Data;
 	Delays Delays_Data;
@@ -81,6 +85,7 @@ private:
 	std::mt19937 mt;
 	uint32_t seed_v;
 	//input
+	//game
 	SDL_Keycode moveLeft = SDLK_a;
 	SDL_Keycode moveRight = SDLK_d;
 	SDL_Keycode moveLeft2 = SDLK_LEFT;
@@ -90,8 +95,12 @@ private:
 	SDL_Keycode holdTetromino = SDLK_u;
 	SDL_Keycode hardDrop = SDLK_w;
 	SDL_Keycode hardDrop2 = SDLK_UP;
-#ifdef SDL
+	//menus
+	SDL_Keycode menuMoveUp = SDLK_w;
+	SDL_Keycode menuMoveDown = SDLK_s;
+	SDL_Keycode menuSelect = SDLK_j;
+	SDL_Keycode menuUpOneLevel = SDLK_k;
 	//UI
 	TextComponent InGameUI;
-#endif
+	//menu
 };

@@ -43,4 +43,5 @@ typedef union SDL_Event
 extern SDL_Event Events[MAX_NUM_OF_EVENTS];
 
 extern int SDL_PollEvent(SDL_Event * event);
+extern int SDL_WaitEvent(SDL_Event * event);
 extern bool sys_input_quit(Uint32 type, SDL_Keycode key);
