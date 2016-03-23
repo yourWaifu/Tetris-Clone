@@ -13,9 +13,8 @@ in the future I plan to make it so that you can change the controls
 
 #Plans for the future
 - [ ] Soft drop
-- [ ] Pause menu (no choice to restart game in menu)
- - [ ] resume
- - [ ] an options memu
+- [x] Pause menu (no choice to restart game in menu)
+ - [x] an options memu
    * * the star means that this option will only apply after player has lost the game or not in-game
     - [ ] input options
     - [ ] video options
@@ -30,6 +29,5 @@ in the future I plan to make it so that you can change the controls
       - [ ] *Sonic Drop or Standard hard drop
       - [ ] *TGM Rotation or SRS
       - [ ] *soft drop speed 20 to 60 (this will be a multiplier)
- - [ ] quit
 - [ ] save after every hold, and new tetris piece that is generated (this is help people not restart unlesss thay lose)
 - [ ] add replay system
