@@ -18,6 +18,7 @@ OutputDebugString(dbstring.c_str());
 #include "Tetromino.h"
 #include "common.h"
 #include "menus.h"
+#include "InputComponent.h"
 
 const SDL_Color white = { 255, 255, 255 };
 
@@ -86,21 +87,31 @@ private:
 	uint32_t seed_v;
 	//input
 	//game
-	SDL_Keycode moveLeft = SDLK_a;
-	SDL_Keycode moveRight = SDLK_d;
-	SDL_Keycode moveLeft2 = SDLK_LEFT;
-	SDL_Keycode moveRight2 = SDLK_RIGHT;
-	SDL_Keycode rotateClockwise = SDLK_k;
-	SDL_Keycode rotateCounterClockwise = SDLK_j;
-	SDL_Keycode holdTetromino = SDLK_u;
-	SDL_Keycode hardDrop = SDLK_w;
-	SDL_Keycode hardDrop2 = SDLK_UP;
+	InputAction moveLeft;
+	InputAction moveRight;
+	InputAction rotateClockwise;
+	InputAction rotateCounterClockwise;
+	InputAction holdTetromino;
+	InputAction hardDrop;
+	//SDL_Keycode moveLeft = SDLK_a;
+	//SDL_Keycode moveRight = SDLK_d;
+	//SDL_Keycode moveLeft2 = SDLK_LEFT;
+	//SDL_Keycode moveRight2 = SDLK_RIGHT;
+	//SDL_Keycode rotateClockwise = SDLK_k;
+	//SDL_Keycode rotateCounterClockwise = SDLK_j;
+	//SDL_Keycode holdTetromino = SDLK_u;
+	//SDL_Keycode hardDrop = SDLK_w;
+	//SDL_Keycode hardDrop2 = SDLK_UP;
 	//menus
-	SDL_Keycode menuMoveUp = SDLK_w;
-	SDL_Keycode menuMoveDown = SDLK_s;
-	SDL_Keycode menuSelect = SDLK_j;
-	SDL_Keycode menuUpOneLevel = SDLK_k;
+	InputAction openMenu;
+	InputAction menuMoveUp;
+	InputAction menuMoveDown;
+	InputAction menuSelect;
+	InputAction menuUpOneLevel;
+	//SDL_Keycode menuMoveUp = SDLK_w;
+	//SDL_Keycode menuMoveDown = SDLK_s;
+	//SDL_Keycode menuSelect = SDLK_j;
+	//SDL_Keycode menuUpOneLevel = SDLK_k;
 	//UI
 	TextComponent InGameUI;
-	//menu
 };

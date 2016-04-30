@@ -10,3 +10,5 @@ struct SceenResolution
 };
 
 extern SceenResolution gameResolution;
+
+int convertStringToIntger(const char* string);

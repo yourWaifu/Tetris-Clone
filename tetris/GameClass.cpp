@@ -257,13 +257,26 @@ void GameClass::startGame()
 	for (int i = 0; i < sizeOfRandomTetrominoesIndex; i++) {		//makes everything in the randomTetrominoesIndex array = n
 		randomTetrominoesIndex[i] = 'n';
 	}
-	canShowGhostPiece = true;
 
 #ifdef SDL
 	//***UI***
 	InGameUI.changeFont("fonts/calibri.ttf", (int)(0.05f * gameResolution.h));
 	InGameUI.changeColor(255, 255, 255);
 #endif
+
+	//set up controls, settings, save files, and set up files if thay don't exist
+	moveLeft.init("moveLeft", 'a', SDLK_LEFT);
+	moveRight.init("moveRight", 'd', SDLK_RIGHT);
+	rotateClockwise.init("rotateClockwise", 'k');
+	rotateCounterClockwise.init("rotateCounterClockwise", 'j');
+	holdTetromino.init("holdTetromino", 'u');
+	hardDrop.init("hardDrop", 'w', SDLK_UP);
+	openMenu.init("openMenu", SDLK_ESCAPE, SDLK_KP_ENTER);
+	menuMoveUp.init("menuMoveUp", 'w');
+	menuMoveDown.init("menuMoveDown", 's');
+	menuSelect.init("menuSelect", 'j');
+	menuUpOneLevel.init("menuUpOneLevel", 'k');
+	canShowGhostPiece = true;
 
 	//***loop time***
 	while (*gameState != lost && *gameState != quit) {
@@ -334,25 +347,25 @@ void GameClass::processInput()
 	while (SDL_PollEvent(&_event)) {
 		const Uint8* states = SDL_GetKeyboardState(NULL);
 		switch (_event.type) {
-			case SDL_QUIT:
-				*gameState = quit;
-				break;
-			case SDL_KEYDOWN:
-				//TO_DO MAKE THIS CLEANER
-				if ((states[SDL_GetScancodeFromKey(moveRight)] || states[SDL_GetScancodeFromKey(moveRight2)]) || (states[SDL_GetScancodeFromKey(moveLeft)] || states[SDL_GetScancodeFromKey(moveLeft2)])) {
-					potentialVelocity[0] = (states[SDL_GetScancodeFromKey(moveRight)] || states[SDL_GetScancodeFromKey(moveRight2)]) - (states[SDL_GetScancodeFromKey(moveLeft)] || states[SDL_GetScancodeFromKey(moveLeft2)]);
-					timeForNextMove = msTime;
-					DAS = 0;
-				}
-				if (states[SDL_GetScancodeFromKey(holdTetromino)]) hold();
-				if (_event.key.keysym.sym == hardDrop || _event.key.keysym.sym == hardDrop2) FallingTetrimno.hardDrop(&grid, &HardDropHint);
-				if (_event.key.keysym.sym == rotateClockwise) FallingTetrimno.rotate(&grid, clockwise);
-				if (_event.key.keysym.sym == rotateCounterClockwise) FallingTetrimno.rotate(&grid, counterClockwise);
-				if (_event.key.keysym.sym == SDLK_ESCAPE || _event.key.keysym.sym == SDLK_KP_ENTER) pause(states);
+		case SDL_QUIT:
+			*gameState = quit;
+			break;
+		case SDL_KEYDOWN:
+			//TO_DO MAKE THIS CLEANER
+			if (moveRight.returnState(states) || moveLeft.returnState(states)) {
+				potentialVelocity[0] = moveRight.returnState(states) - moveLeft.returnState(states);
+				timeForNextMove = msTime;
+				DAS = 0;
+			}
+			if (holdTetromino.returnState(states)) hold();
+			if (hardDrop.isEqualTo(_event.key.keysym.sym)) FallingTetrimno.hardDrop(&grid, &HardDropHint);
+			if (rotateClockwise.isEqualTo(_event.key.keysym.sym)) FallingTetrimno.rotate(&grid, clockwise);
+			if (rotateCounterClockwise.isEqualTo(_event.key.keysym.sym)) FallingTetrimno.rotate(&grid, counterClockwise);
+			if (openMenu.isEqualTo(_event.key.keysym.sym)) pause(states);
 				break;
 			case SDL_KEYUP:
-				if ((!states[SDL_GetScancodeFromKey(moveRight)] || !states[SDL_GetScancodeFromKey(moveRight2)]) || (!states[SDL_GetScancodeFromKey(moveLeft)] || !states[SDL_GetScancodeFromKey(moveLeft2)])) {
-					potentialVelocity[0] = (states[SDL_GetScancodeFromKey(moveRight)] || states[SDL_GetScancodeFromKey(moveRight2)]) - (states[SDL_GetScancodeFromKey(moveLeft)] || states[SDL_GetScancodeFromKey(moveLeft2)]);
+				if (!moveRight.returnState(states) || !moveLeft.returnState(states)) {
+					potentialVelocity[0] = moveRight.returnState(states) - moveLeft.returnState(states);
 					timeForNextMove = msTime;
 					DAS = 0;
 				}
@@ -515,15 +528,15 @@ void GameClass::pause(const Uint8* states)		//TO-DO before the rendering the pau
 		switch (_event.type) {
 		case SDL_KEYDOWN:
 			if (states[SDL_GetScancodeFromKey(SDLK_ESCAPE)] && canCloseMenu) *gameState = in_game;
-			if (_event.key.keysym.sym == menuMoveUp) {
+			if (menuMoveUp.isEqualTo(_event.key.keysym.sym)) {
 				if (pathToCurrent->selectIndex == 0) pathToCurrent->selectIndex = pathToCurrent->getCurrentMenu()->getSize() - 1;
 				else --pathToCurrent->selectIndex;
 			}
-			if (_event.key.keysym.sym == menuMoveDown) {
+			if (menuMoveDown.isEqualTo(_event.key.keysym.sym)) {
 				if (pathToCurrent->selectIndex == pathToCurrent->getCurrentMenu()->getSize() -1 ) pathToCurrent->selectIndex = 0;
 				else ++pathToCurrent->selectIndex;
 			}
-			if (_event.key.keysym.sym == menuSelect) {
+			if (menuSelect.isEqualTo(_event.key.keysym.sym)) {
 				if (pathToCurrent->getCurrentMenu()->menuList->at(pathToCurrent->selectIndex)->isThisAMenu()){
 					pathToCurrent->location[pathToCurrent->numOfObjectsInLocationArray] = static_cast<NormalMenu*> (pathToCurrent->getCurrentMenu()->menuList->at(pathToCurrent->selectIndex));
 					++pathToCurrent->numOfObjectsInLocationArray;
@@ -534,7 +547,7 @@ void GameClass::pause(const Uint8* states)		//TO-DO before the rendering the pau
 					}
 				}
 			}
-			if (_event.key.keysym.sym == menuUpOneLevel ) {
+			if (menuUpOneLevel.isEqualTo(_event.key.keysym.sym)) {
 				if (pathToCurrent->numOfObjectsInLocationArray - 1) {
 					pathToCurrent->getCurrentMenu()->magic = false;
 					--pathToCurrent->numOfObjectsInLocationArray;

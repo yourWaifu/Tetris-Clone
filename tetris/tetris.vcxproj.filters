@@ -48,6 +48,12 @@
     <ClCompile Include="menus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sys_file.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="config_file.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameClass.h">
@@ -75,6 +81,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="menus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sys_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="config_file.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

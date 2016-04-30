@@ -127,6 +127,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="config_file.cpp" />
     <ClCompile Include="GameClass.cpp" />
     <ClCompile Include="GhostTetromino.cpp" />
     <ClCompile Include="GridClass.cpp" />
@@ -135,17 +136,20 @@
     <ClCompile Include="platform\windows\main.cpp" />
     <ClCompile Include="common.cpp" />
     <ClCompile Include="SpeedTimingData.cpp" />
+    <ClCompile Include="sys_file.cpp" />
     <ClCompile Include="Tetromino.cpp" />
     <ClCompile Include="platform\windows\TextComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="config_file.h" />
     <ClInclude Include="GameClass.h" />
     <ClInclude Include="GridClass.h" />
     <ClInclude Include="InputComponent.h" />
     <ClInclude Include="menus.h" />
     <ClInclude Include="SpeedTimingData.h" />
+    <ClInclude Include="sys_file.h" />
     <ClInclude Include="Tetromino.h" />
     <ClInclude Include="platform\windows\TextComponent.h" />
   </ItemGroup>
