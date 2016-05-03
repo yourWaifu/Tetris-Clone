@@ -25,8 +25,7 @@ static int fileLength(FILE *f) {
 
 int sys_FileOpenRead(char *path, int *size) {
 	int handleIndex = findHandle();
-	FILE *fileHandle;
-	fopen_s(&fileHandle, path, "rb");
+	FILE *fileHandle = fopen(path, "rb");
 	if (fileHandle == 0) {
 		if (size != 0)
 			*size = -1;
@@ -40,8 +39,7 @@ int sys_FileOpenRead(char *path, int *size) {
 
 int sys_FileOpenWrite(char *path) {
 	int handleIndex = findHandle();
-	FILE *fileHandle;
-	fopen_s(&fileHandle, path, "wb");
+	FILE *fileHandle = fopen(path, "wb");
 	if (fileHandle == 0) {
 		handleIndex = -1;
 	}
@@ -69,7 +67,7 @@ void sys_FileSeek(int handle, int position) {
 int sys_FileRead(int handle, void* destination, int count) {
 	if (handle < 0 || MAX_HANDLES - 1 < handle || destination == 0)
 		return 0;
-	int bytesRead = (int)fread_s(destination, count, 1, count, fileHandles[handle]);
+	int bytesRead = (int)fread(destination, 1, count, fileHandles[handle]);
 	return bytesRead;
 }
 

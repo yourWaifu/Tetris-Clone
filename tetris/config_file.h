@@ -1,5 +1,7 @@
 #pragma once
+#include <string.h>
 #include "common.h"
+#include "sys_file.h"
 #include "InputComponent.h"
 
 struct specialCommand {
@@ -21,3 +23,4 @@ void readNextWord(char* wordStorage, char* text, int* position, int size, bool s
 void runOperatorFromList(variableOperator* operatorList, size_t numberOfItemsInarray, const char* operatorString, void* a, int b);
 void assignVariable(void* var0, int var1);
 void bindFunction(char* text, int* positionInText, int sizeOfText, bool seek);
+void runConfigFile(char* file);

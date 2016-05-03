@@ -22,12 +22,29 @@ SDLK_RIGHT, SDLK_LEFT, SDLK_UP, SDLK_DOWN,
 'd', 'a', 'w', 's'
 };
 
+const char* keyNames[32] = { "A", "B", "SELECT", "START",
+"DRIGHT", "DLEFT", "DUP", "DDOWN",
+"R", "L", "X", "Y",
+"", "", "ZL", "ZR",
+"", "", "", "",
+"TOUCH", "", "", "",
+"CSTICK_RIGHT", "CSTICK_LEFT", "CSTICK_UP", "CSTICK_DOWN",
+"CPAD_RIGHT", "CPAD_LEFT", "CPAD_UP", "CPAD_DOWN" 
+};
+
 SDL_Scancode SDL_GetScancodeFromKey(SDL_Keycode key)
 {
 	if ('a' <= key && key <= 'z') return (SDL_Scancode)(key - 93);	// SDLK_a - SDL_SCANCODE_A = 93
 	if (key == '0') return SDL_SCANCODE_0;			// SDLK_0 - SDL_SCANCODE_0 != 19
 	if ('1' <= key && key <= '9') return (SDL_Scancode)(key - 19);	// SDLK_1 - SDL_SCANCODE_1 = 19
 	return (SDL_Scancode)(key ^ SDLK_SCANCODE_MASK);
+}
+
+const char* SDL_GetKeyName(SDL_Keycode key) {
+	if (key == 0) return 0;
+	for (int i = 0; i < 32; i++)
+		if (threeDSInputToSDL_Keycode[i] == key)
+			return keyNames[i];
 }
 
 const Uint8 * SDL_GetKeyboardState(int * numkeys)

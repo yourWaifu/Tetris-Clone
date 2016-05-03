@@ -65,3 +65,52 @@ void bindFunction(char* text, int* positionInText, int sizeOfText, bool seek) {
 	}
 	if (seek == false) *positionInText = oldPos;
 }
+
+void runConfigFile(char * file)
+{
+	variableCommand variableCommandList[2] = { { "w", &gameResolution.w } ,{ "h", &gameResolution.h } };
+	variableOperator operatorList[1] = { { "=", assignVariable } };
+	specialCommand specialCommandList[1] = { { "bind", bindFunction } };
+
+	int size;
+	int fileHandle = sys_FileOpenRead(file, &size);
+	void *buffer = malloc(size);
+	sys_FileRead(fileHandle, buffer, size);
+	char* fileTextToChar = (char *)buffer;
+	int memoryWalker = 0;
+	while (memoryWalker < size) {
+		//get variable name from file
+		char command[64] = "";
+		readNextWord(command, fileTextToChar, &memoryWalker, size, true);
+
+		//check if it's a variable
+		int commandIndex = returnCommandIndex(variableCommandList, sizeof(variableCommandList) / sizeof(variableCommandList[0]), command);
+		if (commandIndex != -1) {	//if the command exist
+			char operatorString[4] = "";
+			readNextWord(operatorString, fileTextToChar, &memoryWalker, size, true);	//get operator
+			readNextWord(command, fileTextToChar, &memoryWalker, size, true);			//get number
+			runOperatorFromList(operatorList, sizeof(operatorList) / sizeof(operatorList[0]), operatorString, variableCommandList[commandIndex].address, convertStringToIntger(command));
+		}
+		else {
+			size_t numberOfItemsInarray = sizeof(specialCommandList) / sizeof(specialCommandList[0]);
+			for (unsigned int i = 0; i < numberOfItemsInarray; i++) {
+				if (strcmp(command, specialCommandList[i].name) == 0) {
+					specialCommandList[i].function(fileTextToChar, &memoryWalker, size, true);
+				}
+			}
+		}
+
+		//go to next line
+		while (memoryWalker < size) {
+			readNextWord(command, fileTextToChar, &memoryWalker, size, true);
+			if (strcmp(command, "\n") == 0) {
+				++memoryWalker;
+				break;
+			}
+		}
+	}
+
+	sys_FileClose(fileHandle);
+	free(buffer);
+	buffer = NULL;
+}

@@ -37,7 +37,7 @@ void SDL_RenderFillRects(SDL_Renderer * renderer, const SDL_Rect * rects, int co
 			for (int yi = currentRect.y; yi < currentRect.y + currentRect.h; yi++) {
 				//if (xi < 0 || SCREEN_WIDTH < xi || yi < 0 || SCREEN_HIGHET < yi) break;
 				for (int i = 0; i < NUM_OF_BYTES; i++)
-					renderer->buffer[(((xi * SCREEN_HIGHET) + (SCREEN_HIGHET - yi)) * 3) + i] = renderer->color[i];
+					renderer->buffer[(((xi * SCREEN_HIGHET) + ((SCREEN_HIGHET - 1) - yi)) * 3) + i] = renderer->color[i];
 				//char str[15];
 				//sprintf(str, "%d", renderer->buffer[(((xi * SCREEN_HIGHET) + (SCREEN_HIGHET - yi)) * 2) + i]);
 				//printText(str);
@@ -63,18 +63,16 @@ void SDL_RenderDrawPoints(SDL_Renderer * renderer, const SDL_Point * points, int
 	for (int i = 0; i < count; i++) {
 		if (0 <= points[i].x || points[i].x <= SCREEN_WIDTH || 0 <= points[i].y || SCREEN_HIGHET <= points[i].y) {
 			for (int c = 0; c < NUM_OF_BYTES; c++)
-				renderer->buffer[(((points[i].x * SCREEN_HIGHET) + (SCREEN_HIGHET - points[i].y)) * NUM_OF_BYTES) + c] = renderer->color[c];
+				renderer->buffer[(((points[i].x * SCREEN_HIGHET) + ((SCREEN_HIGHET - 1) - points[i].y)) * NUM_OF_BYTES) + c] = renderer->color[c];
 		}
 	}
 }
 
-void SDL_RenderPresent(SDL_Renderer * renderer)
+void SDL_RenderPresent(SDL_Renderer * renderer)		//thanks opl
 {
 	u8* fb = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, NULL, NULL);
-	for (int x = 0; x < SCREEN_WIDTH; x++)
-		for (int y = 0; y < SCREEN_HIGHET; y++)
-			for (int c = 0; c < NUM_OF_BYTES; c++)
-				fb[(((x * SCREEN_HIGHET) + (SCREEN_HIGHET - y)) * 3) + c] = renderer->buffer[(((x * SCREEN_HIGHET) + (SCREEN_HIGHET - y)) * 3) + c];
+	for (int i = 0; i < SCREEN_WIDTH * SCREEN_HIGHET * NUM_OF_BYTES; i++)
+		fb[i] = renderer->buffer[i];
 	//gfxFlushBuffers();	//only use for debugging
 	gfxSwapBuffers();
 	//Wait for VBlank
@@ -82,3 +80,7 @@ void SDL_RenderPresent(SDL_Renderer * renderer)
 }
 
 
+/* thanks opl
+for (int i = 0; i < SCREEN_WIDTH * SCREEN_HIGHET * NUM_OF_BYTES; i++)
+	fb[i] = renderer->buffer[i];
+*/

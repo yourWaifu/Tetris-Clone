@@ -30,6 +30,7 @@ struct SDL_Keyboard
 extern SDL_Keyboard SDL_keyboard;
 
 extern SDL_Scancode SDL_GetScancodeFromKey(SDL_Keycode key);
+const char* SDL_GetKeyName(SDL_Keycode key);
 extern const Uint8* SDL_GetKeyboardState(int *numkeys);
 
 typedef union SDL_Event
