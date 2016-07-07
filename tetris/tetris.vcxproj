@@ -136,7 +136,7 @@
     <ClCompile Include="platform\windows\main.cpp" />
     <ClCompile Include="common.cpp" />
     <ClCompile Include="SpeedTimingData.cpp" />
-    <ClCompile Include="sys_file.cpp" />
+    <ClCompile Include="platform\windows\sys_file.cpp" />
     <ClCompile Include="Tetromino.cpp" />
     <ClCompile Include="platform\windows\TextComponent.cpp" />
   </ItemGroup>
@@ -148,8 +148,8 @@
     <ClInclude Include="GridClass.h" />
     <ClInclude Include="InputComponent.h" />
     <ClInclude Include="menus.h" />
+    <ClInclude Include="platform\windows\sys_file.h" />
     <ClInclude Include="SpeedTimingData.h" />
-    <ClInclude Include="sys_file.h" />
     <ClInclude Include="Tetromino.h" />
     <ClInclude Include="platform\windows\TextComponent.h" />
   </ItemGroup>

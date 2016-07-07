@@ -1,7 +1,5 @@
 #include "config_file.h"
 
-InputAction listOfKeys[1] = {0};
-
 void readNextWord(char * wordStorage, char * text, int * position, int size, bool seek)
 {
 	int oldPos = *position;
@@ -11,7 +9,13 @@ void readNextWord(char * wordStorage, char * text, int * position, int size, boo
 			wordStorage[memoryWalker] = text[*position];
 			++memoryWalker;
 		}
-		else if (text[*position] == 13) ++memoryWalker;
+		else if (text[*position] == 13) {
+			if (memoryWalker == 0) memoryWalker++;
+			else {
+				wordStorage[memoryWalker] = NULL;
+				break;
+			}
+		}
 		else if (text[*position] == '\n') {
 			if (memoryWalker == 0) wordStorage[memoryWalker++] = '\n';
 			wordStorage[memoryWalker] = NULL;
@@ -23,6 +27,7 @@ void readNextWord(char * wordStorage, char * text, int * position, int size, boo
 			break;
 		}
 	}
+	if (*position == size) wordStorage[memoryWalker] = NULL;
 	if (seek == false) *position = oldPos;
 }
 
@@ -52,15 +57,16 @@ void bindFunction(char* text, int* positionInText, int sizeOfText, bool seek) {
 	char wordStorage[64];
 	int oldPos = *positionInText;
 	readNextWord(wordStorage, text, positionInText, sizeOfText, true);
-	int numberOfItemsInarray = sizeof(listOfKeys) / sizeof(listOfKeys[0]);
-	for (unsigned int i = 0; i < numberOfItemsInarray; i++) {
-		if (strcmp(wordStorage, listOfKeys[i].name) == 0) {
+	if (listOfKeys.empty()) return;
+	for (unsigned int i = 0; i < listOfKeys.size(); i++) {
+		if (strcmp(wordStorage, listOfKeys[i]->name) == 0) {
 			for (int j = 0; j < 2; j++) {
 				readNextWord(wordStorage, text, positionInText, sizeOfText, true);
 				SDL_Keycode newKey = NULL;
-				if (wordStorage[1] == NULL) newKey = wordStorage[0];
-				if (newKey) listOfKeys[i].key[j] = newKey;
+				if (wordStorage[0] == 39 && wordStorage[2] == 39) newKey = wordStorage[1];
+				if (newKey) listOfKeys[i]->key[j] = newKey;
 			}
+			break;
 		}
 	}
 	if (seek == false) *positionInText = oldPos;
@@ -68,7 +74,7 @@ void bindFunction(char* text, int* positionInText, int sizeOfText, bool seek) {
 
 void runConfigFile(char * file)
 {
-	variableCommand variableCommandList[2] = { { "w", &gameResolution.w } ,{ "h", &gameResolution.h } };
+	variableCommand variableCommandList[4] = { { "w", &gameResolution.w } ,{ "h", &gameResolution.h }, { "canHoldTetromino", (int*)&canShowGhostPiece }, {"fullscreen", (int*)&gameResolution.fullscreen} };
 	variableOperator operatorList[1] = { { "=", assignVariable } };
 	specialCommand specialCommandList[1] = { { "bind", bindFunction } };
 
@@ -89,6 +95,7 @@ void runConfigFile(char * file)
 			char operatorString[4] = "";
 			readNextWord(operatorString, fileTextToChar, &memoryWalker, size, true);	//get operator
 			readNextWord(command, fileTextToChar, &memoryWalker, size, true);			//get number
+			if (command[0] == 't' && command[1] == 'r' && command[2] == 'u' && command[3] == 'e' && command[4] == NULL) command[0] = '1';	//turn true into 1
 			runOperatorFromList(operatorList, sizeof(operatorList) / sizeof(operatorList[0]), operatorString, variableCommandList[commandIndex].address, convertStringToIntger(command));
 		}
 		else {

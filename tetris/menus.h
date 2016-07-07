@@ -28,8 +28,8 @@ public:
 
 class MenuAction : public MenuObject {
 public:
-	MenuAction(std::string _name, std::string _description, void(*_doAction)(void*, std::string*), void* _variableToEdit, std::string _value = "");
-	void (*doAction)(void*, std::string*);
+	MenuAction(std::string _name, std::string _description, void(*_doAction)(void*, const std::string, std::string*), void* _variableToEdit, std::string _value = "");
+	void (*doAction)(void*, const std::string, std::string*);
 	void* getVariablePointer() { return variableToEdit; }
 protected:
 	void* variableToEdit;

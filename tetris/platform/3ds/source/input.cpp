@@ -45,6 +45,7 @@ const char* SDL_GetKeyName(SDL_Keycode key) {
 	for (int i = 0; i < 32; i++)
 		if (threeDSInputToSDL_Keycode[i] == key)
 			return keyNames[i];
+	return 0;
 }
 
 const Uint8 * SDL_GetKeyboardState(int * numkeys)

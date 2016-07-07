@@ -1,8 +1,12 @@
 #pragma once
+#include <sys.h>
+#ifdef SDL
+#include "platform/windows/sys_file.h"
+#endif
 #include <string.h>
 #include "common.h"
-#include "sys_file.h"
 #include "InputComponent.h"
+#include "GameClass.h"
 
 struct specialCommand {
 	char name[64];

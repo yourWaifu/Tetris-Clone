@@ -6,9 +6,13 @@ int main(int argc, char **argv) {
 
 	SDL_Init(SDL_INIT_EVERYTHING);
 	TTF_Init();
-	
+
+	runConfigFile("config.txt");
+	if (!gameResolution.w) gameResolution.w = 400;
+	if (!gameResolution.h) gameResolution.h = 480;
+
 	// Create an application window with the following settings
-	gameResolution.change(400, 480);
+	gameResolution.change(gameResolution.w, gameResolution.h);
 	SDL_Rect windowSize;
 	windowSize.x = 0;
 	windowSize.y = 0;
@@ -21,7 +25,7 @@ int main(int argc, char **argv) {
 		SDL_WINDOWPOS_UNDEFINED,           // initial y position
 		windowSize.w,                               // width, in pixels
 		windowSize.h,                               // height, in pixels
-		SDL_WINDOW_OPENGL             // flags - see below
+		gameResolution.fullscreen ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_OPENGL            // flags - see below
 		);
 
 	SDL_Renderer *renderer = SDL_CreateRenderer(

@@ -19,8 +19,10 @@ OutputDebugString(dbstring.c_str());
 #include "common.h"
 #include "menus.h"
 #include "InputComponent.h"
+#include "config_file.h"
 
 const SDL_Color white = { 255, 255, 255 };
+extern bool canShowGhostPiece;
 
 enum state {
 	starting,
@@ -81,7 +83,6 @@ private:
 	GridClass grid;								//the grid, what else do you think it is?
 	unsigned int seed;
 	int bag[4];
-	bool canShowGhostPiece;
 	//random
 	std::mt19937 mt;
 	uint32_t seed_v;
@@ -93,6 +94,12 @@ private:
 	InputAction rotateCounterClockwise;
 	InputAction holdTetromino;
 	InputAction hardDrop;
+
+	InputAction openMenu;
+	InputAction menuMoveUp;
+	InputAction menuMoveDown;
+	InputAction menuSelect;
+	InputAction menuUpOneLevel;
 	//SDL_Keycode moveLeft = SDLK_a;
 	//SDL_Keycode moveRight = SDLK_d;
 	//SDL_Keycode moveLeft2 = SDLK_LEFT;
@@ -103,11 +110,7 @@ private:
 	//SDL_Keycode hardDrop = SDLK_w;
 	//SDL_Keycode hardDrop2 = SDLK_UP;
 	//menus
-	InputAction openMenu;
-	InputAction menuMoveUp;
-	InputAction menuMoveDown;
-	InputAction menuSelect;
-	InputAction menuUpOneLevel;
+
 	//SDL_Keycode menuMoveUp = SDLK_w;
 	//SDL_Keycode menuMoveDown = SDLK_s;
 	//SDL_Keycode menuSelect = SDLK_j;

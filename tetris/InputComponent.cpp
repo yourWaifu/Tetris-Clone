@@ -1,15 +1,15 @@
 #include "InputComponent.h"
 
+std::vector<InputAction*> listOfKeys;
+
 InputAction::InputAction(const char* _name, SDL_Keycode _key, SDL_Keycode _key2)
 {
 	init(_name, _key, _key2);
 }
 
-
 InputAction::InputAction(const char * _name)
 {
 	name = _name;
-	canChangeKey0 = true;
 }
 
 InputAction::InputAction()
@@ -35,8 +35,12 @@ void InputAction::init(const char* _name, SDL_Keycode _key, SDL_Keycode _key2)
 	name = _name;
 	key[0] = _key;
 	key[1] = _key2;
-	if (key[0] != NULL && key[1] == NULL) canChangeKey0 = false;
-	else canChangeKey0 = true;
+}
+
+void makeNewKey(InputAction* newKey, const char * _name, SDL_Keycode _key, SDL_Keycode _key2)
+{
+	newKey->init(_name, _key, _key2);
+	listOfKeys.push_back(newKey);
 }
 
 void* bind(void* var, std::string* val)
@@ -48,16 +52,10 @@ void* bind(void* var, std::string* val)
 	InputAction* inputToBind = (InputAction*)var;
 	if (inputToBind->key[0] == _event->key.keysym.sym) {
 		inputToBind->key[0] = NULL;
-		inputToBind->canChangeKey0 = true;
 	} else if (inputToBind->key[1] == _event->key.keysym.sym) {
 		inputToBind->key[1] = NULL;
-		inputToBind->canChangeKey0 = false;
-	} else if (inputToBind->canChangeKey0) {
-		inputToBind->key[0] = _event->key.keysym.sym;
-		inputToBind->canChangeKey0 = false;
 	} else {
 		inputToBind->key[1] = _event->key.keysym.sym;
-		inputToBind->canChangeKey0 = true;
 	}
 	std::string key0ToString = inputToBind->key[0] == NULL ? "" : SDL_GetKeyName(inputToBind->key[0]);
 	std::string key1ToString = inputToBind->key[1] == NULL ? "" : SDL_GetKeyName(inputToBind->key[1]);
@@ -65,3 +63,4 @@ void* bind(void* var, std::string* val)
 	free(_event);
 	return nullptr;
 }
+

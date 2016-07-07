@@ -1,6 +1,7 @@
 #pragma once
 #include <sys.h>
 #include <string>
+#include <vector>
 //move all input stuff here, later
 //remember that this will be a pointer in the gameclass
 
@@ -20,10 +21,10 @@ public:
 	bool power;
 	const char* name;
 	SDL_Keycode key[2];
-	bool canChangeKey0;
 private:
 };
 
-extern InputAction listOfKeys[1];
+extern std::vector<InputAction*> listOfKeys;
 
+void makeNewKey(InputAction* newKey, const char * _name, SDL_Keycode _key, SDL_Keycode _key2 = NULL);
 extern void* bind(void*, std::string* val);

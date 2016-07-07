@@ -36,7 +36,6 @@ int SDL_PollEvent(SDL_Event * _event)
 			++eventsMemoryWalker;
 		}
 		else if (keyDown & BIT(i)) {
-			char str[15];
 			keyboard->keystate[threeDSInputToSDL_Scancode[i]] = 1;
 			Events[eventsMemoryWalker].key.keysym.scancode = threeDSInputToSDL_Scancode[i];
 			Events[eventsMemoryWalker].key.keysym.sym = threeDSInputToSDL_Keycode[i];

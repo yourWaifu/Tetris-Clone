@@ -1,5 +1,8 @@
 #include "GameClass.h"
 
+bool canShowGhostPiece;
+unsigned int DASspeed;
+
 GameClass::GameClass(SDL_Rect *Size, SDL_Renderer *ren, state* stateOfTheGame)
 {
 	windowSize = Size;
@@ -264,19 +267,22 @@ void GameClass::startGame()
 	InGameUI.changeColor(255, 255, 255);
 #endif
 
-	//set up controls, settings, save files, and set up files if thay don't exist
-	moveLeft.init("moveLeft", 'a', SDLK_LEFT);
-	moveRight.init("moveRight", 'd', SDLK_RIGHT);
-	rotateClockwise.init("rotateClockwise", 'k');
-	rotateCounterClockwise.init("rotateCounterClockwise", 'j');
-	holdTetromino.init("holdTetromino", 'u');
-	hardDrop.init("hardDrop", 'w', SDLK_UP);
-	openMenu.init("openMenu", SDLK_ESCAPE, SDLK_KP_ENTER);
-	menuMoveUp.init("menuMoveUp", 'w');
-	menuMoveDown.init("menuMoveDown", 's');
-	menuSelect.init("menuSelect", 'j');
-	menuUpOneLevel.init("menuUpOneLevel", 'k');
+	////set up controls, settings, save files, and set up files if thay don't exist
+	makeNewKey(&moveLeft, "moveLeft", 's', SDLK_LEFT);
+	makeNewKey(&moveRight, "moveRight", 'f', SDLK_RIGHT);
+	makeNewKey(&rotateClockwise, "rotateClockwise", 'k');
+	makeNewKey(&rotateCounterClockwise, "rotateCounterClockwise", 'j');
+	makeNewKey(&holdTetromino, "holdTetromino", 'u');
+	makeNewKey(&hardDrop, "hardDrop", 'e', SDLK_UP);
+	makeNewKey(&openMenu, "openMenu", SDLK_ESCAPE, SDLK_KP_ENTER);
+	makeNewKey(&menuMoveUp, "menuMoveUp", 'e', SDLK_UP);
+	makeNewKey(&menuMoveDown, "menuMoveDown", 'd', SDLK_DOWN);
+	makeNewKey(&menuSelect, "menuSelect", 'j');
+	makeNewKey(&menuUpOneLevel, "menuUpOneLevel", 'k');
 	canShowGhostPiece = true;
+	DASspeed = 16;
+
+	runConfigFile("config.txt");
 
 	//***loop time***
 	while (*gameState != lost && *gameState != quit) {
@@ -445,7 +451,7 @@ void GameClass::updateGame()
 			timeForNextMove += Delays_Data.getRoundedAndConvertedDataFromLevel(1000, level, Delays::DAS);
 			++DAS;
 		} else
-			timeForNextMove += 16;
+			timeForNextMove += DASspeed;
 	}
 	if (FallingTetrimno.returnHasLanded()) {
 		FallingTetrimno.updateHasLanded(&grid);
@@ -487,17 +493,22 @@ void GameClass::spawnNewFallingTetromino()
 	timeForNextFall = (double)currentFrameTime + InternalGravity_Data.getConvertedDataFromLevel(timerFrequency, level);	//this is used to synchronize the timings
 }
 
-void randomThing(void* var, std::string* val) {
+void randomThing(void* var, const std::string name, std::string* val) {
 	*val = *val == "false" ? "true" : "false";
 }
 
-void quitToWindows(void* var, std::string* val) {
+void quitToWindows(void* var, const std::string name, std::string* val) {
 	*(state*)var = quit;
 }
 
-void toggleGhostPiece(void* var, std::string* val) {
+void toggleGhostPiece(void* var, const std::string name, std::string* val) {
 	*(bool*)var = *(bool*)var ? false : true;
 	*val = *(bool*)var ? "on" : "off";
+}
+
+void changeDASspeed(void* var, const std::string name, std::string* val, Path* path) {
+	*(unsigned int*)var = convertStringToIntger(name.c_str());
+	path->location[path->numOfObjectsInLocationArray - 1]->name = name;
 }
 
 void GameClass::pause(const Uint8* states)		//TO-DO before the rendering the pause menu copy the framebuffer and use that as the background
@@ -543,7 +554,7 @@ void GameClass::pause(const Uint8* states)		//TO-DO before the rendering the pau
 				} else {
 					MenuAction* selectedAction = static_cast<MenuAction*> (pathToCurrent->getCurrentMenu()->menuList->at(pathToCurrent->selectIndex));
 					if (selectedAction != NULL) {
-						selectedAction->doAction(selectedAction->getVariablePointer(), &selectedAction->value);
+						selectedAction->doAction(selectedAction->getVariablePointer(), selectedAction->name ,&selectedAction->value);
 					}
 				}
 			}

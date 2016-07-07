@@ -1,6 +1,6 @@
 #include "menus.h"
 
-MenuAction::MenuAction(std::string _name, std::string _description, void(*_doAction)(void*, std::string*), void* _variableToEdit, std::string _value)
+MenuAction::MenuAction(std::string _name, std::string _description, void(*_doAction)(void*, const std::string, std::string*), void* _variableToEdit, std::string _value)
 {
 	name = _name;
 	description = _description;
