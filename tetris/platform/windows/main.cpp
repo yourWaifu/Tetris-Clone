@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
 	windowSize.h = gameResolution.h;
 
 	SDL_Window *window = SDL_CreateWindow(
-		"Tetris Clone made by a bad programmer",                  // window title
+		"Tetris Clone",                  // window title
 		SDL_WINDOWPOS_UNDEFINED,           // initial x position
 		SDL_WINDOWPOS_UNDEFINED,           // initial y position
 		windowSize.w,                               // width, in pixels
