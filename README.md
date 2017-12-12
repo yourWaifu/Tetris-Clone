@@ -1,4 +1,4 @@
-# Tetris Clone made by a bad programmer
+# Tetris Clone
 
 this is just a personal project to help me get more experience with programming.
 
