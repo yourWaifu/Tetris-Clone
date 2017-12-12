@@ -33,8 +33,8 @@ SOURCES		:=	source ../../
 DATA		:=	data
 INCLUDES	:=	include
 #ROMFS		:=	romfs
-APP_TITLE       :=  Tetris Clone made by a bad programmer
-APP_DESCRIPTION :=  Tetris Clone made by a bad programmer on the 3ds
+APP_TITLE       :=  Tetris Clone
+APP_DESCRIPTION :=  Tetris Clone for the 3ds
 APP_AUTHOR      :=  Sleepy Flower Girl
 
 #---------------------------------------------------------------------------------
